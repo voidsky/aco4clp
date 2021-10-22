@@ -1,0 +1,5 @@
+make main --dry-run --keep-going --print-directory
+make: Entering directory '/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas'
+g++ -Wall -g -o acoclp acoclp.o main.cpp
+make: Leaving directory '/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas'
+ 

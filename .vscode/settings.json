@@ -1,0 +1,14 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "C_Cpp.errorSquiggles": "Disabled",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas",
+            "binaryPath": "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas/acoclp",
+            "binaryArgs": []
+        }
+    ],
+    "files.associations": {
+        "string": "cpp"
+    }
+}

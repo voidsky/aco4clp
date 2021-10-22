@@ -1,0 +1,35 @@
+# 1 "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas/.vscode/tasks.json"
+# 1 "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas//"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 31 "<command-line>"
+# 1 "/usr/include/stdc-predef.h" 1 3 4
+# 32 "<command-line>" 2
+# 1 "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas/.vscode/tasks.json"
+{
+ "version": "2.0.0",
+ "tasks": [
+  {
+   "type": "process",
+   "label": "C/C++: cpp build active file",
+   "command": "/usr/bin/cpp",
+   "args": [
+    "-g",
+    "${file}",
+    "-o",
+    "${fileDirname}/acoclp"
+   ],
+   "options": {
+    "cwd": "${workspaceFolder}"
+   },
+   "problemMatcher": [
+    "$gcc"
+   ],
+   "group": {
+    "kind": "build",
+    "isDefault": true
+   },
+   "detail": "compiler: /usr/bin/cpp"
+  }
+ ]
+}
