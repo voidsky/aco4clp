@@ -4,11 +4,67 @@
     "makefile.launchConfigurations": [
         {
             "cwd": "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas",
-            "binaryPath": "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas/acoclp",
+            "binaryPath": "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas/clp",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/mnt/g/My Drive/Magistranturai/Magistrinis/Darbas",
+            "binaryPath": "/mnt/g/My Drive/Magistranturai/Magistrinis/Darbas/clp",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas",
+            "binaryPath": "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas/clp",
             "binaryArgs": []
         }
     ],
     "files.associations": {
-        "string": "cpp"
+        "string": "cpp",
+        "vector": "cpp",
+        "algorithm": "cpp",
+        "array": "cpp",
+        "atomic": "cpp",
+        "bit": "cpp",
+        "*.tcc": "cpp",
+        "cctype": "cpp",
+        "clocale": "cpp",
+        "cmath": "cpp",
+        "cstdarg": "cpp",
+        "cstddef": "cpp",
+        "cstdint": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "cwchar": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "set": "cpp",
+        "unordered_map": "cpp",
+        "exception": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "random": "cpp",
+        "string_view": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "fstream": "cpp",
+        "initializer_list": "cpp",
+        "iosfwd": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "limits": "cpp",
+        "new": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "stdexcept": "cpp",
+        "streambuf": "cpp",
+        "typeinfo": "cpp",
+        "iomanip": "cpp",
+        "ctime": "cpp"
     }
 }

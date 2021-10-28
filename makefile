@@ -3,11 +3,8 @@ DEBUG = -g
 CFLAGS = -Wall -c $(DEBUG)
 LFLAGS = -Wall $(DEBUG)
 
-main: main.cpp acoclp.o
-	$(CC) $(LFLAGS) -o acoclp acoclp.o main.cpp
-
-acoclp.o: acoclp.cpp acoclp.h
-	$(CC) $(CFLAGS) acoclp.cpp
+main: main.cpp 
+	$(CC) $(LFLAGS) *.cpp -o clp 
 
 clean:
-	rm *.o acoclp
+	rm *.o clp

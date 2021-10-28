@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Oct 22 13:35:38 2021
+# Make data base, printed on Thu Oct 28 20:08:04 2021
 
 # Variables
 
@@ -17,11 +17,13 @@ make: *** No rule to make target 'all'.  Stop.
 # automatic
 ?F = $(notdir $?)
 # environment
-WSLENV = VSCODE_WSL_EXT_LOCATION/up
+WSLENV = ELECTRON_RUN_AS_NODE/w:
 # default
 .SHELLFLAGS := -c
 # environment
 VSCODE_AGENT_FOLDER = /home/algis/.vscode-server
+# environment
+VSCODE_LOG_NATIVE = false
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
@@ -35,7 +37,7 @@ SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
-_ = /home/algis/.vscode-server/bin/d2e414d9e4239a252d1ab117bd7067f125afd80a/node
+_ = /mnt/c/Program Files/Microsoft VS Code/bin/code
 # makefile (from 'makefile', line 3)
 CFLAGS = -Wall -c $(DEBUG)
 # makefile (from 'makefile', line 1)
@@ -47,19 +49,21 @@ GNUMAKEFLAGS :=
 # environment
 XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
 # environment
-VSCODE_LOGS = /home/algis/.vscode-server/data/logs/20211022T132453
+VSCODE_VERBOSE_LOGGING = true
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
+# environment
+VSCODE_CWD = /mnt/c/Program Files/Microsoft VS Code
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/algis/.vscode-server/bin/d2e414d9e4239a252d1ab117bd7067f125afd80a/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/CanonicalGroupLimited.UbuntuonWindows_2004.2021.825.0_x64__79rhkp1fndgsc:/mnt/c/WinAVR-20100110/bin:/mnt/c/WinAVR-20100110/utils/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files (x86)/Calibre2/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Appeon/Shared/PowerBuilder:/mnt/c/Program Files (x86)/Appeon/Shared/PowerBuilder/x64:/mnt/c/Program Files (x86)/Appeon/PowerBuilder 19.0:/mnt/c/WINDOWS/Microsoft.NET/Framework/v4.0.30319:/mnt/c/Program Files (x86)/GitExtensions/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/d/Program Files/nodejs/:/mnt/c/Program Files (x86)/dotnet/:/mnt/c/Users/Algis/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/DOSBox-0.74-2/:/mnt/c/Program Files/Java/jdk-11.0.1/bin:/mnt/d/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin:/mnt/d/Program Files (x86)/Fiddler:/mnt/c/Users/Algis/AppData/Local/Microsoft/WindowsApps:/mnt/d/Program Files/R/R-4.0.0/bin/:/mnt/c/Users/Algis/AppData/Local/Programs/MiKTeX 2.9/miktex/bin/x64/:/mnt/c/Program Files (x86)/MakeTzx/:/mnt/c/Users/Algis/.dotnet/tools:/mnt/c/Users/Algis/AppData/Roaming/npm:/mnt/c/Program Files (x86)/heroku/bin:/snap/bin
+PATH = /home/algis/.vscode-server/bin/6cba118ac49a1b88332f312a8f67186f7f3c1643/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/CanonicalGroupLimited.UbuntuonWindows_2004.2021.825.0_x64__79rhkp1fndgsc:/mnt/c/WinAVR-20100110/bin:/mnt/c/WinAVR-20100110/utils/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files (x86)/Calibre2/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Appeon/Shared/PowerBuilder:/mnt/c/Program Files (x86)/Appeon/Shared/PowerBuilder/x64:/mnt/c/Program Files (x86)/Appeon/PowerBuilder 19.0:/mnt/c/WINDOWS/Microsoft.NET/Framework/v4.0.30319:/mnt/c/Program Files (x86)/GitExtensions/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/d/Program Files/nodejs/:/mnt/c/Program Files (x86)/dotnet/:/mnt/c/Users/Algis/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/DOSBox-0.74-2/:/mnt/c/Program Files/Java/jdk-11.0.1/bin:/mnt/d/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin:/mnt/d/Program Files (x86)/Fiddler:/mnt/c/Users/Algis/AppData/Local/Microsoft/WindowsApps:/mnt/d/Program Files/R/R-4.0.0/bin/:/mnt/c/Users/Algis/AppData/Local/Programs/MiKTeX 2.9/miktex/bin/x64/:/mnt/c/Program Files (x86)/MakeTzx/:/mnt/c/Users/Algis/.dotnet/tools:/mnt/c/Users/Algis/AppData/Roaming/npm:/mnt/c/Program Files (x86)/heroku/bin:/snap/bin
 # environment
 XDG_RUNTIME_DIR = /mnt/wslg/runtime-dir
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-d105db38-427a-421b-8443-e8b4c432c3fa.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-00dfce5d-6d70-44a1-84b5-fe4078f19b6c.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -69,13 +73,17 @@ LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:
 # environment
 DISPLAY = :0
 # environment
+VSCODE_PIPE_LOGGING = true
+# environment
 PWD = /mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas
 # default
 .LOADED := 
 # environment
-WSL_INTEROP = /run/WSL/1243_interop
+WSL_INTEROP = /run/WSL/8_interop
 # environment
 PULSE_SERVER = /mnt/wslg/PulseServer
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/server/remoteExtensionHostProcess
 # environment
 HOME = /home/algis
 # environment
@@ -90,34 +98,28 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
 MAKELEVEL := 0
-# environment
-VERBOSE_LOGGING = true
 # default
 MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
 # environment
-SHLVL = 0
+SHLVL = 1
 # makefile (from 'makefile', line 1)
 CC = g++
 # default
 MAKE_VERSION := 4.2.1
 # environment
-AMD_ENTRYPOINT = vs/server/remoteExtensionHostProcess
-# environment
 USER = algis
 # makefile
 .DEFAULT_GOAL := main
 # environment
-NAME = DESKTOP-9CR87D2
-# environment
-PIPE_LOGGING = true
+NAME = Code
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # makefile (from 'makefile', line 4)
 LFLAGS = -Wall $(DEBUG)
 # environment
-VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/Algis/.vscode/extensions/ms-vscode-remote.remote-wsl-0.50.1
+VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/Algis/.vscode/extensions/ms-vscode-remote.remote-wsl-0.58.4
 # default
 MAKE_COMMAND := make
 # default
@@ -153,7 +155,7 @@ WAYLAND_DISPLAY = wayland-0
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # environment
-VSCODE_INJECT_NODE_MODULE_LOOKUP_PATH = /home/algis/.vscode-server/bin/d2e414d9e4239a252d1ab117bd7067f125afd80a/remote/node_modules
+VSCODE_INJECT_NODE_MODULE_LOOKUP_PATH = /home/algis/.vscode-server/bin/6cba118ac49a1b88332f312a8f67186f7f3c1643/remote/node_modules
 # default
 .RECIPEPREFIX := 
 # environment
@@ -165,7 +167,7 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 WSL_DISTRO_NAME = Ubuntu
 # variable set hash-table stats:
-# Load=76/1024=7%, Rehash=0, Collisions=4/101=4%
+# Load=77/1024=8%, Rehash=0, Collisions=4/102=4%
 
 # Pattern-specific Variable Values
 
@@ -173,9 +175,9 @@ WSL_DISTRO_NAME = Ubuntu
 
 # Directories
 
-# . (device 67, inode 7599824371734887): 9 files, no impossibilities.
+# . (device 67, inode 7599824371734887): 12 files, no impossibilities.
 
-# 9 files, no impossibilities in 1 directories.
+# 12 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -191,26 +193,14 @@ all:
 #  File has not been updated.
 
 # Not a target:
-acoclp.h:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-10-22 11:28:56.7974561
+#  Last modified 2021-10-28 20:08:01.2646108
 #  File has been updated.
 #  Successfully updated.
 
 # Not a target:
 main.cpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-acoclp.cpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -225,37 +215,30 @@ clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 13):
-	rm *.o acoclp
+#  recipe to execute (from 'makefile', line 10):
+	rm *.o clp
 
-main: main.cpp acoclp.o
+main: main.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 7):
-	$(CC) $(LFLAGS) -o acoclp acoclp.o main.cpp
-
-acoclp.o: acoclp.cpp acoclp.h
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'makefile', line 10):
-	$(CC) $(CFLAGS) acoclp.cpp
+	$(CC) $(LFLAGS) *.cpp -o clp 
 
 # files hash-table stats:
-# Load=10/1024=1%, Rehash=0, Collisions=0/25=0%
+# Load=7/1024=1%, Rehash=0, Collisions=0/18=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 16 / storage = 133 B / avg = 8 B
-# current buf: size = 8162 B / used = 133 B / count = 16 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 19 / storage = 147 B / avg = 7 B
+# current buf: size = 8162 B / used = 147 B / count = 19 / avg = 7 B
 
-# strcache performance: lookups = 28 / hit rate = 42%
+# strcache performance: lookups = 26 / hit rate = 26%
 # hash-table stats:
-# Load=16/8192=0%, Rehash=0, Collisions=1/28=4%
-# Finished Make data base on Fri Oct 22 13:35:38 2021
+# Load=19/8192=0%, Rehash=0, Collisions=1/26=4%
+# Finished Make data base on Thu Oct 28 20:08:04 2021
 
  
