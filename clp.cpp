@@ -49,7 +49,7 @@ Holes::Holes(double H_wid, double H_len, double H_hei, double H_vol) {
         this->H_vol = H_vol;
 }
 
-bool CLP::init(const string filename, vector<P_Cont>* map) {
+bool CLP::init(const string filename, vector<P_Cont>* packets) {
 	ifstream input(filename.c_str());
 	if (!input.is_open()) {
 		cerr << "Could not open file " << filename << endl;
@@ -95,21 +95,17 @@ bool CLP::init(const string filename, vector<P_Cont>* map) {
 	input.close();
         
         int id = 0;
+        // our map is a vector of packets
         for (int type = 0; type < numPacketTypes; type++) 
-        {
                 for (int packet = 0; packet < number[type]; packet++)
                 {                
                                         P_Cont n;
-                                        n.id = id;
+                                        n.id = id++;
                                         n.typeId = type;
                                         n.orientations = orient[type];
-                                        // each orientation of box has its own pheromone value, set 1 by default
-                                        n.pheromones = new double[n.orientations];                                         
-                                        for (int i = 0; i < n.orientations; i++) n.pheromones[i] = 1;                                                                    
-                                        map->push_back(n);
-                        id++;
+                                        n.bottomArea = wid[type] * len[type];
+                                        packets->push_back(n);
                 }
-        }
         
 
 	return true;

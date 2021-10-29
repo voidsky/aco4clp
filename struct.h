@@ -21,12 +21,13 @@ typedef struct P_Order {
 	int index;   // Mantener actualizados auxWei y auxWid
 } P_Order;
 
+struct Arc;
 
 typedef struct P_Cont {
 	int id;
 	int typeId;
 	int orientations;
-	double* pheromones;
+	double bottomArea;
 } P_Cont;
 
 /* We will represent ant path as a vector of Nodes */

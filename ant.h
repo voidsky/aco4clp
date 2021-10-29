@@ -5,13 +5,16 @@
 
 class Ant {
 	public:
-		Ant(std::vector<P_Cont> *globalMap);
-		bool grabNode();
-        std::vector<Node> * getPath();
+		Ant(std::vector<P_Cont> *packets, double ** ph);	
+		bool chooseFirst();
+		bool chooseNext();
+        std::vector<Node> *getPath();
 
 	private:
-		std::vector<P_Cont*> ptrsToGlobalMap;
+		bool addToPath(P_Cont * packet);
+		std::vector<P_Cont*> *ptrsToGlobalMap;
 		std::vector<Node> *path;	
+		double ** pheromones;	
 };
 
 #endif 

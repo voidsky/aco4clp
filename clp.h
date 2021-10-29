@@ -33,7 +33,7 @@ class Holes {
 
 class CLP {
 public:
-	bool init(const string filename, vector<P_Cont>* map);
+	bool init(const string filename, vector<P_Cont>* packets);
 
 	void printIndividual(vector<Node> *g);	
 	void evaluateIndividual (vector<Node> *g, double *o1, double *o2);
