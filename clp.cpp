@@ -80,7 +80,7 @@ bool CLP::init(const string filename, vector<P_Cont>* packets) {
 		input >> len[i] >> ori1[i] >> wid[i] >> ori2[i] >> hei[i] >> ori3[i] >> wei[i] >> number[i];
 		orient[i] = 2 * ori1[i] + 2 * ori2[i] + 2 * ori3[i];		
 		numPacketsTotal += number[i];
-                volumePackets += len[i] * wid[i] * hei[i]; 
+                volumePackets += len[i] * wid[i] * hei[i] * number[i]; 
 		
 		if (wid[i] > widCont || len[i] > lenCont || hei[i] > heiCont) {
 			cerr << " Error: size of box is bigger than width of container "<< endl;
@@ -104,6 +104,7 @@ bool CLP::init(const string filename, vector<P_Cont>* packets) {
                                         n.typeId = type;
                                         n.orientations = orient[type];
                                         n.bottomArea = wid[type] * len[type];
+                                        n.volume = wid[type] * len[type] * hei[type];
                                         packets->push_back(n);
                 }
         

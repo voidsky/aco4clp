@@ -1,3 +1,6 @@
+#ifndef CLP_H
+#define CLP_H
+
 #include "struct.h"
 #include <iostream>
 #include <fstream>
@@ -38,8 +41,9 @@ public:
 	void printIndividual(vector<Node> *g);	
 	void evaluateIndividual (vector<Node> *g, double *o1, double *o2);
 	void orientation_pieces(int id, int rot);
+	static double volumeCont;
 private:
-	static double widCont, lenCont, heiCont, weiCont, volumeCont, numPackets;
+	static double widCont, lenCont, heiCont, weiCont, numPackets;
 	static double volumePackets;
 	static int numPacketTypes;
 	static int numPacketsTotal;
@@ -68,3 +72,4 @@ private:
 };
 
 
+#endif 

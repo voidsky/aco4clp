@@ -11,29 +11,24 @@ using namespace std;
 int main(void) {
 	srand(time(NULL));
 	
-	
-   	vector<P_Cont> * packets = new vector<P_Cont>();
 	CLP clp;
-	clp.init("Dereli.dat", packets);
+	Map * map = new Map();   			
+	clp.init("Dereli.dat", map->packets);	
+	map->initPheromoneMap(2);
+	map->setEvaporationRate(0.001);
 
-	double ** pheromones;
-    pheromones = new double*[packets->size()];
-    for (size_t i = 0; i < packets->size(); i++)        
-        {
-                pheromones[i] = new double[packets->size()];
-                for (size_t j = 0; j < packets->size(); j++) pheromones[i][j] = 1;                                        
-        }
-
-
-
-	vector<Ant> * ants;
-	ants = new vector<Ant>;
-	for (int i = 0; i < 5; i++)
+	/* Creating ants and choosing first node */
+	vector<Ant> * ants = new vector<Ant>;
+	for (int i = 0; i < 1000; i++)
 	{
-		Ant a(packets, pheromones);
-		a.chooseFirst();
-		ants->push_back(a);
+		Ant a(&clp, map, clp.volumeCont);			// create ant
+		a.chooseFirst();		// choose first packet in packet map
+		ants->push_back(a);		// add ant to ants list
 	}
+
+
+	double highestSur = 0.0;
+	Ant * bestAnt;
 
 	bool wasChosen;
 	do
@@ -45,22 +40,33 @@ int main(void) {
 			if (a->chooseNext() == false )
 			{
 				//get objective received
-				double *obj1 = new double();
+				double *volume = new double();
 				double *obj2 = new double();				
-				clp.evaluateIndividual(a->getPath(), obj1, obj2);
-				cout << "And id finished " << a << " Volume = " << *obj1 << " " << "Weight = " << *obj2 << endl;
+				clp.evaluateIndividual(a->getPath(), volume, obj2);
+				double sur = *volume / 100;		// calculate space utilisation ratio
+				//cout << "Ant id finished " << a << " Volume = " << *volume << "% " << "Weight = " << *obj2 << " sur " << sur <<  endl;
+				a->setSur(sur);
 				//update pheromone path
+				a->updatePheromonePath(sur);
+				//cout << "Ant path items" << a->getPath()->size() << " Ant path volume " << a->getPathVolume() << endl;
+				//while (cin.get() != '\n') {}
+				if (sur > highestSur) 
+				{
+					highestSur = sur;
+					bestAnt = a;
+				}
 
 			} else {
 				wasChosen = true;
 			}
 		}
-		//evaporate;
+		// all ants made their step, evaporate map
+		map->evaporate();
 
 	} while (wasChosen);
 	
-		
 
+	cout << "Ant path items" << bestAnt->getPath()->size() << " Ant path volume " << bestAnt->getPathVolume() << " ant sur " << bestAnt->getSur() << endl;
 
 
 	//clp.printIndividual(ant.getPath());

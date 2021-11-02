@@ -28,6 +28,7 @@ typedef struct P_Cont {
 	int typeId;
 	int orientations;
 	double bottomArea;
+	double volume;
 } P_Cont;
 
 /* We will represent ant path as a vector of Nodes */
