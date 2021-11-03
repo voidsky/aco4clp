@@ -1,7 +1,9 @@
-#ifndef CLP_H
-#define CLP_H
+#ifndef CONTAINER_H
+#define CONTAINER_H
 
 #include "struct.h"
+#include "clpdata.h"
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -34,37 +36,20 @@ class Holes {
 		int Posz;
 };
 
-class CLP {
+class Container {
 public:
-	bool init(const string filename);
-
-	void printIndividual(vector<Node> *g);	
-	void evaluateIndividual (vector<Node> *g, double *o1, double *o2);
-	void evaluateIndividual2 (double &o1, double &o2);
+    Container(ClpData& data) { mData = data; lenCont = data.lenCont; widCont = data.widCont; heiCont = data.heiCont; volume = data.volumeCont; weight = data.weiCont; mW_Cont_free = data.widCont; }
+	bool evaluateIndividual2 (Node n, double &o1, double &o2);
 	void AddNode(Node n);
-	void RemoveLast(double&  o1, double& o2);
-	void orientation_pieces(int id, int rot);
-	static double volumeCont, weiCont;
-
+	void RemoveLast();
+	void orientation_pieces(int id, int rot,double& widR,double& depR,double& heiR);
 	vector<P_Cont> *packets;
-	bool AllPacked();	
+	bool AllPacked();
+    double volume, weight;	
 private:
-	static double widCont, lenCont, heiCont, numPackets;
-	static double volumePackets;
-	static int numPacketTypes;
-	static int numPacketsTotal;
 
-	static double *len;
-	static double *wid;
-	static double *hei;
-	static double *wei;
-	static int *orient;
-	static int *number;
-
-	static vector<int> ori1;
-	static vector<int> ori2;
-	static vector<int> ori3;	
-
+    static  bool cmpVol(const Holes &h1, const Holes &h2) { return (h1.getVol() < h2.getVol()); };
+    ClpData mData;
 	vector<P_Order> items;    // Items ordenados segun la heuristica
 	vector<P_Order> itemsCont;
 
@@ -72,10 +57,10 @@ private:
 	vector<Holes> holesA;       // Vector de huecos Above dentro del contenedor
 	vector<Holes> holesB;       // Vector de huecos Beside dentro del contenedor
 
-	int widR, depR, heiR;
+    double lenCont, heiCont, widCont;
 
 	int mW_Cont_free = 0.0;
 };
 
 
-#endif 
+#endif

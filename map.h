@@ -1,30 +1,37 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "CLP.h"
 #include "struct.h"
+#include "clpdata.h"
 
 class Map {
 	public:
-		Map();
+		Map(ClpData& data);
         
-		void initPheromoneMap(double initialPhValue);
+		void initPheromones(double initialPhValue);
 		void evaporate();		
 		
         void printPheromones();		
 
-		void setEvaporationRate(double er) { evaporationRate = er; };		
+		double getPhValue(int id) { return mPheromones[id]; };
 		void setPhValue(int j, double p);
+
+		double size() { return mPackets->size();};
+		P_Cont * getPacketPtr(int n) { return &mPackets->at(n); }
+
+		void setEvaporationRate(double er) { evaporationRate = er; };		
 		void setMinPh(double p) { mMinPh = p; }
 		void setMaxPh(double p) { mMaxPh = p; }
 
-		double * pheromones;
-        std::vector<P_Cont> *packets;
-	private:
-		
+
+	private:		
 		double evaporationRate;
 		double mMinPh = 0.0;
 		double mMaxPh = 10.0;
+
+		ClpData mData;
+		double * mPheromones;
+        std::vector<P_Cont> *mPackets;		
 };
 
 #endif

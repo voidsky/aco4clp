@@ -1,18 +1,16 @@
 #include "ant.h"
+
 using namespace std;
 
-Ant::Ant(CLP clp, Map& map, double maxContainerVolume, double maxContainerWeight, ANTOBJECTIVE objective) 
+Ant::Ant(Map& map, Container& cont, ANTOBJECTIVE objective):
+	mMap(map), mCont(cont)
 {
-	mClp = clp;
 	mObjective = objective;
 	mMap = map;
-	mPheromones = map.pheromones;		
-	mMaxContainerVolume = maxContainerVolume;
-	mMaxContainerWeight = maxContainerWeight;
-	mPath = new vector<Node>();	
+	mCont = cont;
 	ptrsToPackets = new vector<P_Cont*>();	
-	for (size_t i = 0; i < mMap.packets->size(); i++)
-		ptrsToPackets->push_back(&mMap.packets->at(i));						
+	for (size_t i = 0; i < mMap.size(); i++)
+		ptrsToPackets->push_back(mMap.getPacketPtr(i));						
 }
 
 bool Ant::chooseFirst() 
@@ -33,13 +31,13 @@ double Ant::SumLeftCriteriaWithPheromones()
 				switch (mObjective)
 				{
 				case OBJ_VOLUME:
-					sumVolumeTimesPh += ptrsToPackets->at(n)->volume + mPheromones[j];
+					sumVolumeTimesPh += ptrsToPackets->at(n)->volume * mMap.getPhValue(j);
 					break;					
 				case OBJ_WEIGHT:
-					sumVolumeTimesPh += ptrsToPackets->at(n)->weight * mPheromones[j];
+					sumVolumeTimesPh += ptrsToPackets->at(n)->weight * mMap.getPhValue(j);
 					break;
 				case OBJ_WEIGHTANDVOLUME:
-					sumVolumeTimesPh += ptrsToPackets->at(n)->volume * mPheromones[j] + ptrsToPackets->at(n)->weight * mPheromones[j];
+					sumVolumeTimesPh += ptrsToPackets->at(n)->volume * mMap.getPhValue(j) + ptrsToPackets->at(n)->weight * mMap.getPhValue(j);
 					break;
 				}				
 			}
@@ -57,18 +55,18 @@ bool Ant::chooseNext()
 
 			for (size_t n = 0; n < ptrsToPackets->size(); n++)
 			{
-				int j = ptrsToPackets->at(n)->id;
-				double volumeOfj = ptrsToPackets->at(n)->volume;
-				double bottomAreaOfj = ptrsToPackets->at(n)->bottomArea;
-				double weiOfj = ptrsToPackets->at(n)->weight;
-				double phij = mPheromones[j];
+				int j = mMap.getPacketPtr(n)->id;
+				double volumeOfj = mMap.getPacketPtr(n)->volume;
+				double bottomAreaOfj = mMap.getPacketPtr(n)->bottomArea;
+				double weiOfj = mMap.getPacketPtr(n)->weight;
+				double phij = mMap.getPhValue(j);
 				
 				double probability;
 				bool fitsInContainer;
 				switch (mObjective)
 				{
 					case OBJ_VOLUME:
-						probability = ((phij + volumeOfj)  / sumLeftovers)  * (double)(rand() / (RAND_MAX + 1.));
+						probability = ((phij * volumeOfj)  / sumLeftovers) * (double)(rand() / (RAND_MAX + 1.));
 						break;					
 					case OBJ_WEIGHT:
 						probability = (phij * weiOfj) / sumLeftovers;
@@ -100,17 +98,12 @@ bool Ant::chooseNext()
 
 void Ant::updatePheromonePath(double sur) 
 {
-	if (mPath->size()<=1) 
-	{
-		//cout << " Ant has one or less nodes, nothing to update." << endl;
-		return;
-	}
-	mSur = sur;
+	if (mPath.size()<=1) return;
 
-	for (size_t n = 0; n < mPath->size(); n++)
+	for (size_t n = 0; n < mPath.size(); n++)
 	{
-		int j = mPath->at(n).ptrToMapNode->id;		
-		double newPh = mPheromones[j] = mSur;
+		int j = mPath.at(n).ptrToMapNode->id;		
+		double newPh = (mMap.getPhValue(j) + sur);
 		mMap.setPhValue(j,newPh);
 	}	
 }		
@@ -121,37 +114,20 @@ bool Ant::addToPath(P_Cont * packet)
 			Node n;
 			n.ptrToMapNode = packet;
 			n.typeId = n.ptrToMapNode->typeId;
-			n.orientation = 0;			
+			n.orientation = uniformRandom(n.ptrToMapNode->orientations);
+			n.weight = n.ptrToMapNode->weight;
 			n.count = 1;
-			
 
-			/*double vol = 0;
-			for (size_t i = 0; i < mPath->size(); i++)
+			//mCont.AddNode(n);
+			if (mCont.evaluateIndividual2(n, mPathVolume, mPathWeight))
 			{
-				vol += mPath->at(i).ptrToMapNode->volume;
-			}
-			cout << vol << " ";		*/
-
-			mClp.AddNode(n);
-			mClp.evaluateIndividual2(mPathVolume, mPathWeight);			
-			if (mClp.AllPacked()) {
-				mPath->push_back(n);
+				mPath.push_back(n);
 				//cout << mPathVolume << " ";
 				return true;
 			} else {
-				mClp.RemoveLast(mPathVolume, mPathWeight);
 				//cout << mPathVolume << " ";				
 				return false;
 			}
-			//double *o1 = new double();
-			//double *o2 = new double();
-			//mClp.evaluateIndividual(mPath, o1, o2);
-			//mPathVolume = *o1;
-			//mPathWeight = *o2;
-			//mPathVolume += n.ptrToMapNode->volume;
-			//mPathWeight += n.ptrToMapNode->weight;
-			
-			//return true;
 }
 
 double Ant::getSur() 
@@ -160,14 +136,27 @@ double Ant::getSur()
 	switch (mObjective)
 	{
 		case OBJ_VOLUME:
-			sur = mPathVolume / mMaxContainerVolume;
+			sur = mPathVolume / mCont.volume;
 			break;
 		case OBJ_WEIGHT:
-		 	sur = mPathWeight / mMaxContainerWeight;
+		 	sur = mPathWeight / mCont.weight;
 			break;
 		case OBJ_WEIGHTANDVOLUME:
-			sur = (mPathVolume + mPathWeight) / (mMaxContainerVolume + mMaxContainerWeight);
+			sur = (mPathVolume + mPathWeight) / (mCont.volume + mCont.weight);
 			break;
 	}
 	return sur;
+}
+
+
+double Ant::getVolumePercentage() {
+	return (mPathVolume * 100) / mCont.volume;
+}
+
+double Ant::getWeightPercentage() {
+	return (mPathWeight * 100) / mCont.weight;
+}
+
+int Ant::getPathSteps() {
+	return mPath.size();
 }

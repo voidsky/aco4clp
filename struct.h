@@ -39,6 +39,7 @@ typedef struct Node {
 	int typeId;  // Piece identifier
 	int count;	// Number of pieces of id type to be used
 	int orientation;	// Orientation for pieces
+	double weight;
 	P_Cont * ptrToMapNode;
 } Node;
 
