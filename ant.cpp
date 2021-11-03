@@ -1,115 +1,83 @@
 #include "ant.h"
 using namespace std;
 
-
-Map::Map() 
+Ant::Ant(CLP clp, Map& map, double maxContainerVolume, double maxContainerWeight, ANTOBJECTIVE objective) 
 {
-	packets = new vector<P_Cont>();
-}
-void Map::initPheromoneMap(double initialPhValue) 
-{
-    pheromones = new double*[packets->size()];
-    for (size_t i = 0; i < packets->size(); i++)        
-        {
-                pheromones[i] = new double[packets->size()];
-                for (size_t j = 0; j < packets->size(); j++) pheromones[i][j] = initialPhValue;                                        
-        }	
-
-}
-
-void Map::evaporate() 
-{
-	int n = packets->size();
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			pheromones[i][j] *= (1-evaporationRate);
-		}
-		
-	}	
-}
-
-void Map::printPheromones() 
-{
-	int n = packets->size();
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			cout << pheromones[i][j] << " ";
-		}
-		cout << endl;
-	}	
-	cout << endl;
-}
-
-void Ant::updatePheromonePath(double sur) 
-{
-	if (mPath->size()<=1) 
-	{
-		//cout << " Ant has one or less nodes, nothing to update." << endl;
-		return;
-	}
-
-	for (size_t n = 1; n < mPath->size(); n++)
-	{
-		int i = mPath->at(n-1).ptrToMapNode->id;		
-		int j = mPath->at(n).ptrToMapNode->id;		
-		mPheromones[i][j] += sur;
-	}	
-}
-
-
-Ant::Ant(CLP * clp, Map* map, double maxContainerVolume) 
-{
-	mMap = map;
-	mMaxContainerVolume = maxContainerVolume;
 	mClp = clp;
-	mPath = new vector<Node>();
-	mPheromones = mMap->pheromones;
+	mObjective = objective;
+	mMap = map;
+	mPheromones = map.pheromones;		
+	mMaxContainerVolume = maxContainerVolume;
+	mMaxContainerWeight = maxContainerWeight;
+	mPath = new vector<Node>();	
 	ptrsToPackets = new vector<P_Cont*>();	
-	for (size_t i = 0; i < mMap->packets->size(); i++)
-		ptrsToPackets->push_back(&mMap->packets->at(i));						
+	for (size_t i = 0; i < mMap.packets->size(); i++)
+		ptrsToPackets->push_back(&mMap.packets->at(i));						
 }
 
 bool Ant::chooseFirst() 
 		{
 			if (ptrsToPackets->empty()) return false;
 			int itemIndex = uniformRandom(ptrsToPackets->size());			
-			//cout << "Ant starting from id " << ptrsToPackets->at(itemIndex)->id << endl;
-			// add to path and remove from ants known path so it wont be chosen next time
 			addToPath(ptrsToPackets->at(itemIndex));
 			ptrsToPackets->erase( ptrsToPackets->begin() + itemIndex );
 			return true;
 		}
 
-bool Ant::chooseNext() 
-		{
-			if (ptrsToPackets->empty()) return false;			
-			int i = mPath->back().ptrToMapNode->id;		// i is current node id
-			
+double Ant::SumLeftCriteriaWithPheromones() 
+{
 			double sumVolumeTimesPh = 0.0;
 			for (size_t n = 0; n < ptrsToPackets->size(); n++)
 			{
 				int j = ptrsToPackets->at(n)->id;
-				sumVolumeTimesPh += ptrsToPackets->at(n)->volume * mPheromones[i][j];
+				switch (mObjective)
+				{
+				case OBJ_VOLUME:
+					sumVolumeTimesPh += ptrsToPackets->at(n)->volume + mPheromones[j];
+					break;					
+				case OBJ_WEIGHT:
+					sumVolumeTimesPh += ptrsToPackets->at(n)->weight * mPheromones[j];
+					break;
+				case OBJ_WEIGHTANDVOLUME:
+					sumVolumeTimesPh += ptrsToPackets->at(n)->volume * mPheromones[j] + ptrsToPackets->at(n)->weight * mPheromones[j];
+					break;
+				}				
 			}
+			return sumVolumeTimesPh;
+}
+bool Ant::chooseNext() 
+		{
+			if (ptrsToPackets->empty()) return false;			
+			
+			double sumLeftovers = SumLeftCriteriaWithPheromones();
 
-			// itterate our local map copy
 			double maxProbability = 0.0;
 			int bestNextIndex;
 			bool candidateToAddFound = false;
+
 			for (size_t n = 0; n < ptrsToPackets->size(); n++)
 			{
 				int j = ptrsToPackets->at(n)->id;
-				//double bottomAreaOfj =  ptrsToPackets->at(n)->bottomArea;
 				double volumeOfj = ptrsToPackets->at(n)->volume;
-				// get pheromone value of possible next step
-				double phij = mPheromones[i][j];
-				double probability = (phij * volumeOfj) / sumVolumeTimesPh;
-				bool fitsInContainer = mPathVolume + volumeOfj <= mMaxContainerVolume;
-				if (fitsInContainer && probability > maxProbability) {
+				double bottomAreaOfj = ptrsToPackets->at(n)->bottomArea;
+				double weiOfj = ptrsToPackets->at(n)->weight;
+				double phij = mPheromones[j];
+				
+				double probability;
+				bool fitsInContainer;
+				switch (mObjective)
+				{
+					case OBJ_VOLUME:
+						probability = ((phij + volumeOfj)  / sumLeftovers)  * (double)(rand() / (RAND_MAX + 1.));
+						break;					
+					case OBJ_WEIGHT:
+						probability = (phij * weiOfj) / sumLeftovers;
+						break;
+					case OBJ_WEIGHTANDVOLUME:
+						probability = (phij * weiOfj + phij * volumeOfj) / sumLeftovers;			
+						break;
+				}
+				if (probability > maxProbability) {
 					maxProbability = probability;
 					bestNextIndex = n;
 					candidateToAddFound = true;
@@ -118,19 +86,34 @@ bool Ant::chooseNext()
 
 			if (candidateToAddFound) 
 			{
-				addToPath(ptrsToPackets->at(bestNextIndex));
-				ptrsToPackets->erase( ptrsToPackets->begin() + bestNextIndex );
-				return true;
+				if (addToPath(ptrsToPackets->at(bestNextIndex))) {
+					ptrsToPackets->erase( ptrsToPackets->begin() + bestNextIndex );
+					return true;
+				} else {
+					return false;
+				}				
 			} else
 			{
 				return false;
 			}
 		}	
 
-vector<Node> * Ant::getPath() 
-		{
-			return mPath;
-		}
+void Ant::updatePheromonePath(double sur) 
+{
+	if (mPath->size()<=1) 
+	{
+		//cout << " Ant has one or less nodes, nothing to update." << endl;
+		return;
+	}
+	mSur = sur;
+
+	for (size_t n = 0; n < mPath->size(); n++)
+	{
+		int j = mPath->at(n).ptrToMapNode->id;		
+		double newPh = mPheromones[j] = mSur;
+		mMap.setPhValue(j,newPh);
+	}	
+}		
 
 bool Ant::addToPath(P_Cont * packet) 
 {
@@ -140,13 +123,51 @@ bool Ant::addToPath(P_Cont * packet)
 			n.typeId = n.ptrToMapNode->typeId;
 			n.orientation = 0;			
 			n.count = 1;
-			mPath->push_back(n);
-			mPathVolume += n.ptrToMapNode->volume;
-			return true;
+			
+
+			/*double vol = 0;
+			for (size_t i = 0; i < mPath->size(); i++)
+			{
+				vol += mPath->at(i).ptrToMapNode->volume;
+			}
+			cout << vol << " ";		*/
+
+			mClp.AddNode(n);
+			mClp.evaluateIndividual2(mPathVolume, mPathWeight);			
+			if (mClp.AllPacked()) {
+				mPath->push_back(n);
+				//cout << mPathVolume << " ";
+				return true;
+			} else {
+				mClp.RemoveLast(mPathVolume, mPathWeight);
+				//cout << mPathVolume << " ";				
+				return false;
+			}
+			//double *o1 = new double();
+			//double *o2 = new double();
+			//mClp.evaluateIndividual(mPath, o1, o2);
+			//mPathVolume = *o1;
+			//mPathWeight = *o2;
+			//mPathVolume += n.ptrToMapNode->volume;
+			//mPathWeight += n.ptrToMapNode->weight;
+			
+			//return true;
 }
 
-double Ant::getPathVolume() 
+double Ant::getSur() 
 {
-	return mPathVolume;
+	double sur;
+	switch (mObjective)
+	{
+		case OBJ_VOLUME:
+			sur = mPathVolume / mMaxContainerVolume;
+			break;
+		case OBJ_WEIGHT:
+		 	sur = mPathWeight / mMaxContainerWeight;
+			break;
+		case OBJ_WEIGHTANDVOLUME:
+			sur = (mPathVolume + mPathWeight) / (mMaxContainerVolume + mMaxContainerWeight);
+			break;
+	}
+	return sur;
 }
-

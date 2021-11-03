@@ -7,6 +7,8 @@
 #include <iostream>
 #include <vector>
 
+enum ANTOBJECTIVE { OBJ_WEIGHT, OBJ_VOLUME, OBJ_WEIGHTANDVOLUME };
+
 typedef struct P_Order {
 	int idItem;
 	int pat;
@@ -29,6 +31,7 @@ typedef struct P_Cont {
 	int orientations;
 	double bottomArea;
 	double volume;
+	double weight;
 } P_Cont;
 
 /* We will represent ant path as a vector of Nodes */

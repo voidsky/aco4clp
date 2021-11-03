@@ -3,40 +3,32 @@
 
 #include "CLP.h"
 #include "struct.h"
-
-class Map {
-	public:
-		Map();
-		void initPheromoneMap(double initialPhValue);
-		void setEvaporationRate(double er) { evaporationRate = er; };		
-		void evaporate();		
-		void printPheromones();		
-		std::vector<P_Cont> *packets;
-		double ** pheromones;
-	private:
-		double evaporationRate;
-};
+#include "map.h"
 
 class Ant {
 	public:
-		Ant(CLP * clp, Map* map, double maxContainerVolume);	
+		Ant(CLP clp, Map& map, double maxContainerVolume, double maxContainerWeight, ANTOBJECTIVE objective);	
 		bool chooseFirst();
 		bool chooseNext();
 		void updatePheromonePath(double sur);
-		double getPathVolume();
-        std::vector<Node> *getPath();
-		void setSur(double s) { mSur = s; };
-		double getSur(void) { return mSur; };
+		double getSur();
+        double SumLeftCriteriaWithPheromones();
+
+		double mMaxContainerVolume;
+		double mMaxContainerWeight;
+		double mPathVolume = 0.0;
+		double mPathWeight = 0.0;
+		double mSur = 0.0;
+		CLP mClp;
+		std::vector<Node> *mPath;
 	private:
-		CLP * mClp;
+		ANTOBJECTIVE mObjective;
 		bool addToPath(P_Cont * packet);
 		std::vector<P_Cont*> *ptrsToPackets;
-		std::vector<Node> *mPath;	
-		double ** mPheromones;	
-		Map* mMap;
-		double mMaxContainerVolume;
-		double mPathVolume = 0.0;
-		double mSur = 0.0;
+			
+		double * mPheromones;	
+		Map mMap;
+		
 };
 
 #endif 

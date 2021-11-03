@@ -36,14 +36,20 @@ class Holes {
 
 class CLP {
 public:
-	bool init(const string filename, vector<P_Cont>* packets);
+	bool init(const string filename);
 
 	void printIndividual(vector<Node> *g);	
 	void evaluateIndividual (vector<Node> *g, double *o1, double *o2);
+	void evaluateIndividual2 (double &o1, double &o2);
+	void AddNode(Node n);
+	void RemoveLast(double&  o1, double& o2);
 	void orientation_pieces(int id, int rot);
-	static double volumeCont;
+	static double volumeCont, weiCont;
+
+	vector<P_Cont> *packets;
+	bool AllPacked();	
 private:
-	static double widCont, lenCont, heiCont, weiCont, numPackets;
+	static double widCont, lenCont, heiCont, numPackets;
 	static double volumePackets;
 	static int numPacketTypes;
 	static int numPacketsTotal;
@@ -68,7 +74,7 @@ private:
 
 	int widR, depR, heiR;
 
-
+	int mW_Cont_free = 0.0;
 };
 
 

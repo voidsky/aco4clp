@@ -1,29 +1,68 @@
 #include "clp.h"
 #include "ant.h"
+#include "map.h"
 #include <stdlib.h> 
 #include <time.h> 
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
+bool compareByVolume(const P_Cont &a, const P_Cont &b)
+{
+    return a.volume < b.volume;
+}
+
+void testSorted(Map& map, CLP& clp)
+{
+	vector<Node> sortedNodes;		
+	vector<P_Cont> copy = *map.packets;
+	std::sort(copy.begin(), copy.end(), compareByVolume);
+	for (size_t i = 0; i < copy.size(); i++)
+	{
+			Node n;
+			n.ptrToMapNode = &copy.at(i);
+			n.typeId = n.ptrToMapNode->typeId;
+			n.orientation = 0;			
+			n.count = 1;
+			sortedNodes.push_back(n);
+	}
+	double *volume = new double();
+	double *weight = new double();				
+	clp.evaluateIndividual(&sortedNodes, volume, weight);
+	double sur = *volume / 100;
+	cout << "Sorted Volume = " << *volume << "% " << "Weight = " << *weight << " sur " << sur <<  endl;
+	return;
+}
+
 int main(void) {
 	srand(time(NULL));
-	
-	CLP clp;
-	Map * map = new Map();   			
-	clp.init("Dereli.dat", map->packets);	
-	map->initPheromoneMap(2);
-	map->setEvaporationRate(0.001);
+	ANTOBJECTIVE currentObj = OBJ_VOLUME;
 
+	CLP clp;
+	Map map; 			
+	clp.init("Dereli.dat");	
+	map.packets = clp.packets;
+	map.initPheromoneMap(3);
+	map.setEvaporationRate(0.1);
+	map.setMinPh(1);	
+	map.setMaxPh(5);
+
+	//testSorted(map, clp);
+
+for (int itterations = 0; itterations < 100; itterations++)
+{
 	/* Creating ants and choosing first node */
 	vector<Ant> * ants = new vector<Ant>;
-	for (int i = 0; i < 1000; i++)
+	for (int i = 0; i < 20; i++)
 	{
-		Ant a(&clp, map, clp.volumeCont);			// create ant
-		a.chooseFirst();		// choose first packet in packet map
-		ants->push_back(a);		// add ant to ants list
+		CLP antsClp;
+		antsClp = clp;	
+		Ant a(clp, map, clp.volumeCont, clp.weiCont, currentObj);			
+		a.chooseFirst();		
+		ants->push_back(a);		
 	}
 
 
@@ -38,36 +77,34 @@ int main(void) {
 		{
 			Ant * a = &ants->at(i);
 			if (a->chooseNext() == false )
-			{
-				//get objective received
-				double *volume = new double();
-				double *obj2 = new double();				
-				clp.evaluateIndividual(a->getPath(), volume, obj2);
-				double sur = *volume / 100;		// calculate space utilisation ratio
-				//cout << "Ant id finished " << a << " Volume = " << *volume << "% " << "Weight = " << *obj2 << " sur " << sur <<  endl;
-				a->setSur(sur);
-				//update pheromone path
-				a->updatePheromonePath(sur);
-				//cout << "Ant path items" << a->getPath()->size() << " Ant path volume " << a->getPathVolume() << endl;
-				//while (cin.get() != '\n') {}
+			{		
+				double sur = a->getSur();				
+				//a->updatePheromonePath(sur);
+
 				if (sur > highestSur) 
 				{
 					highestSur = sur;
 					bestAnt = a;
 				}
-
 			} else {
 				wasChosen = true;
 			}
 		}
 		// all ants made their step, evaporate map
-		map->evaporate();
+		map.evaporate();
 
 	} while (wasChosen);
 	
 
-	cout << "Ant path items" << bestAnt->getPath()->size() << " Ant path volume " << bestAnt->getPathVolume() << " ant sur " << bestAnt->getSur() << endl;
+	cout << "Best ant path size " << bestAnt->mPath->size() << 
+		" Ant sur " << bestAnt->getSur() << 
+		" path vol " << (bestAnt->mPathVolume * 100) / bestAnt->mMaxContainerVolume << 
+		" path wei " << (bestAnt->mPathWeight * 100) / bestAnt->mMaxContainerWeight << endl; 
+	bestAnt->updatePheromonePath(bestAnt->getSur()/10);
+	//map.evaporate();
+	delete ants;
 
+}
 
 	//clp.printIndividual(ant.getPath());
 
