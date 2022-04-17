@@ -28,7 +28,7 @@ bool ClpData::load(const string filename) {
 	volumeCont = lenCont * widCont * heiCont;
         
     cout << fixed << noshowpoint;
-	cout << "Container LxWxH and volume " << lenCont << " x " << widCont << " x " << heiCont << " is " << volumeCont << " cm3" << endl;
+	//cout << "Container LxWxH and volume " << lenCont << " x " << widCont << " x " << heiCont << " is " << volumeCont << " cm3" << endl;
 		
     len = new double[numPacketTypes];
     wid = new double[numPacketTypes];
@@ -49,7 +49,7 @@ bool ClpData::load(const string filename) {
 		input >> len[i] >> ori1[i] >> wid[i] >> ori2[i] >> hei[i] >> ori3[i] >> wei[i] >> number[i];
 		orient[i] = 2 * ori1[i] + 2 * ori2[i] + 2 * ori3[i];		
 		numPacketsTotal += number[i];
-                volumePackets += len[i] * wid[i] * hei[i] * number[i]; 
+		volumePackets += len[i] * wid[i] * hei[i] * number[i]; 
 		
 		if (wid[i] > widCont || len[i] > lenCont || hei[i] > heiCont) {
 			cerr << " Error: size of box is bigger than width of container "<< endl;
@@ -58,8 +58,8 @@ bool ClpData::load(const string filename) {
 		}
 	}
 
-    cout << "Total packet volume " << volumePackets  << " cm3 " << endl;
-	cout << "Packet types " << numPacketTypes << ", total packet number " << numPacketsTotal << endl;
+    //cout << "Total packet volume " << volumePackets  << " cm3 " << endl;
+	//cout << "Packet types " << numPacketTypes << ", total packet number " << numPacketsTotal << endl;
 	
     input.close();
 

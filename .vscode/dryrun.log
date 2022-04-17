@@ -1,5 +1,5 @@
-make main --dry-run --always-make --keep-going --print-directory
+make --dry-run --keep-going --print-directory
 make: Entering directory '/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas'
-g++ -Wall -g *.cpp -o clp 
+g++ -Wall -g  *.cpp -o clp 
 make: Leaving directory '/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas'
  

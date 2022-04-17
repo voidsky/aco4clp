@@ -25,27 +25,32 @@ typedef struct P_Order {
 
 struct Arc;
 
-typedef struct P_Cont {
+/*typedef struct P_Cont {
 	int id;
 	int typeId;
 	int orientations;
-	double bottomArea;
+	//double * bottomArea;
 	double volume;
 	double weight;
 } P_Cont;
-
+*/
 /* We will represent ant path as a vector of Nodes */
 typedef struct Node {
+	int id;	
 	int typeId;  // Piece identifier
-	int count;	// Number of pieces of id type to be used
+	//int count;	// Number of pieces of id type to be used
+	int orientations;
 	int orientation;	// Orientation for pieces
+	double volume;
 	double weight;
-	P_Cont * ptrToMapNode;
+	//P_Cont * ptrToMapNode;
 } Node;
 
 
 
 /* Random from 0 to maxValue-1 */
 int uniformRandom(int maxValue);
+
+double randfrom(double min, double max);
 
 #endif

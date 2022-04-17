@@ -51,12 +51,15 @@ bool Container::evaluateIndividual2 (Node n, double&  o1, double& o2) {
 
         AddNode(n);
         count = itemsCont.back().index;
+ 
         if ( ! (((o2) + itemsCont[count].wei) <= weight) && (((o1) + itemsCont[count].vol) <= volume) ) 
         {
                 RemoveLast();
                 return false;
         }
-
+  
+                holesId = 0;
+                label_control = false;   // Etiqueta de control
 
                 // Se recorre primero el vector de holesF
                 while ((holesId < holesF.size()) && (label_control != true)) {
@@ -245,11 +248,13 @@ bool Container::evaluateIndividual2 (Node n, double&  o1, double& o2) {
                 sort(holesA.begin(), holesA.end(), cmpVol);
                 sort(holesB.begin(), holesB.end(), cmpVol);
         
-        if (!itemsCont[count].pack) {
-                double v = itemsCont[count].vol;
+        if (itemsCont[count].pack == false) {
+                //double v = itemsCont[count].vol;
+                //cout << "candidate vol " << v << " container vol " << volume << " added candidate to path " << (o1)+v << " mcf " << mW_Cont_free << endl;
                 RemoveLast();
+                return false;
         }
-         return itemsCont[count].pack;      
+         return true;
 
 }
 

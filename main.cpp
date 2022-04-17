@@ -2,6 +2,9 @@
 #include "map.h"
 #include "clpdata.h"
 
+#include "helpers.h"
+#include <omp.h>
+
 #include <stdlib.h> 
 #include <time.h> 
 #include <stdio.h>
@@ -11,69 +14,101 @@
 
 using namespace std;
 
-
-int main(void) {
-	srand(time(NULL));
-	
+double cacluclate(const string filename, bool printPath) {
+		
 	ClpData data;
-	if (!data.load("Dereli.dat")) return -1;
+	if (!data.load(filename)) return -1;
 
 	Map map(data);
-	map.initPheromones(2);
-	map.setEvaporationRate(0.1);
+	map.initPheromones(3);
+	map.setEvaporationRate(0.05);
 	map.setMinPh(1);	
-	map.setMaxPh(3);
+	map.setMaxPh(10);
+	int itterationAntCount = 100;
 
-	ANTOBJECTIVE currentObj = OBJ_VOLUME;
+	int notImprovedCount = 0;
+	Ant * globallyBestAnt;
+	double globallyHighestSur = 0.0;
 
-	for (int itterations = 0; itterations < 100; itterations++)
-	{
-		vector<Ant> * ants = new vector<Ant>;
-		for (int i = 0; i < 20; i++)
+	
+	while (notImprovedCount<10)
+	{	
+		//Timer t;
+		//t.Start();
+
+		// initialize N ants, put them on map
+		vector<Ant> * ants = new vector<Ant>;		
+		for (int i = 0; i < itterationAntCount; i++)
 		{	
 			Container c(data);
-			Ant a(map, c, currentObj);			
+			Ant a(map, c);			
 			a.chooseFirst();		
-			ants->push_back(a);		
-		}
-
-		double highestSur = 0.0;
-		Ant * bestAnt;
+			ants->push_back(a);
+		}				
 
 		bool wasChosen;		
+		Ant * itterationBestAnt;
+		double ittertationHighestSur = 0.0;		
 		do
 		{
 			wasChosen = false;
 			for (size_t i = 0; i < ants->size(); i++)
 			{
 				Ant * a = &ants->at(i);
-				if (a->chooseNext() == false )
+				if (a->chooseNext(1.0, 1.0) == false )	//weigh of phoromones alpha versus volume beta, alpha = 1, beta = [2,...,5]
 				{		
 					double sur = a->getSur();				
-					//a->updatePheromonePath(sur);
-
-					if (sur > highestSur) 
+					if (sur > ittertationHighestSur) 
 					{
-						highestSur = sur;
-						bestAnt = a;
+						ittertationHighestSur = sur;
+						itterationBestAnt = a;
 					}
 				} else {
 					wasChosen = true;
 				}
 			}
-			//map.evaporate();
-		} while (wasChosen);
+		}while (wasChosen);
 	
-		cout << "Best ant path size " << bestAnt->getPathSteps() << 
-			" Ant sur " << bestAnt->getSur() << 
-			" path vol " << bestAnt->getVolumePercentage() << 
-			" path wei " << bestAnt->getWeightPercentage() << endl; 
-		bestAnt->updatePheromonePath(bestAnt->getSur()/10);
 		map.evaporate();
-		delete ants;
+		itterationBestAnt->updatePheromonePath(itterationBestAnt->getSur());
 
+		if (ittertationHighestSur > globallyHighestSur) {
+			
+			globallyHighestSur = ittertationHighestSur; 
+			globallyBestAnt=itterationBestAnt; 
+			notImprovedCount = 0;
+		} else 
+		{notImprovedCount++;};	
+
+		cout << notImprovedCount << " Itteration best ant path size " << itterationBestAnt->getPathSteps() << " Ant sur " << itterationBestAnt->getSur() << " path vol " << itterationBestAnt->getVolumePercentage() << endl;
+		//t.StopAndPrint();
 	}
+	
+	cout << "Globally best ant path size " << globallyBestAnt->getPathSteps() << " Ant sur " << globallyBestAnt->getSur() << " path vol " << globallyBestAnt->getVolumePercentage() << endl;
+	if (printPath) globallyBestAnt->printPathSteps();
+	//cout << "\r Itterations with no improvement " << notImprovedCount;	
+	cout << endl;
 
+	return globallyBestAnt->getSur();
+}
 
+int main(void) {
+
+	// test 1 - resut should be 1
+	//cout << "Test 1 ";
+	//cacluclate("test1.dat", true);
+	
+	// test 2 - resut should be 1
+	//cout << "Test 2 ";
+	//cacluclate("test2.dat", true);
+
+	// test 3 - resut should be 0.515625
+	//cout << "Test 3 ";
+	//cacluclate("test3.dat", true);
+	//cacluclate("test4.dat", true);
+
+	// 
+	//cout << "Dereli.dat ";
+	cacluclate("Dereli.dat", true);
 
 } 

@@ -43,7 +43,7 @@ public:
 	void AddNode(Node n);
 	void RemoveLast();
 	void orientation_pieces(int id, int rot,double& widR,double& depR,double& heiR);
-	vector<P_Cont> *packets;
+	vector<Node> *packets;
 	bool AllPacked();
     double volume, weight;	
 private:

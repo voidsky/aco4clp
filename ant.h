@@ -4,24 +4,26 @@
 #include "struct.h"
 #include "map.h"
 #include "container.h"
+#include <cmath>
 
 class Ant {
 	public:
-		Ant(Map& map, Container& cont, ANTOBJECTIVE objective);	
+		Ant(Map& map, Container& cont);	
 		bool chooseFirst();
-		bool chooseNext();
+		bool chooseNext(double alpha, double beta);
 		void updatePheromonePath(double sur);
 		int getPathSteps();
+		void printPathSteps();
 		double getSur();
-        double SumLeftCriteriaWithPheromones();
-
+        
 		double getVolumePercentage();
 		double getWeightPercentage();
 
 	private:		
-		ANTOBJECTIVE mObjective;
-		bool addToPath(P_Cont * packet);
-		std::vector<P_Cont*> *ptrsToPackets;
+		double SumLeftCriteriaWithPheromones(double alpha, double beta);
+		bool addToPath(Node node);
+		bool isFinished = false;
+		std::vector<Node> availableNodes;
 			
 		Map mMap;
 		Container mCont;
@@ -30,6 +32,7 @@ class Ant {
 		double mPathWeight = 0.0;
 		
 		std::vector<Node> mPath;		
+
 };
 
 #endif 

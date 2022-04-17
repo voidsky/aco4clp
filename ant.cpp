@@ -2,96 +2,96 @@
 
 using namespace std;
 
-Ant::Ant(Map& map, Container& cont, ANTOBJECTIVE objective):
+Ant::Ant(Map& map, Container& cont):
 	mMap(map), mCont(cont)
 {
-	mObjective = objective;
 	mMap = map;
 	mCont = cont;
-	ptrsToPackets = new vector<P_Cont*>();	
-	for (size_t i = 0; i < mMap.size(); i++)
-		ptrsToPackets->push_back(mMap.getPacketPtr(i));						
+	// copy from map to local available nodes
+	for (size_t n = 0; n < mMap.getNumberOfPackets(); n++)
+		availableNodes.push_back(mMap.getPacket(n));
 }
+
 
 bool Ant::chooseFirst() 
-		{
-			if (ptrsToPackets->empty()) return false;
-			int itemIndex = uniformRandom(ptrsToPackets->size());			
-			addToPath(ptrsToPackets->at(itemIndex));
-			ptrsToPackets->erase( ptrsToPackets->begin() + itemIndex );
-			return true;
-		}
-
-double Ant::SumLeftCriteriaWithPheromones() 
 {
-			double sumVolumeTimesPh = 0.0;
-			for (size_t n = 0; n < ptrsToPackets->size(); n++)
-			{
-				int j = ptrsToPackets->at(n)->id;
-				switch (mObjective)
-				{
-				case OBJ_VOLUME:
-					sumVolumeTimesPh += ptrsToPackets->at(n)->volume * mMap.getPhValue(j);
-					break;					
-				case OBJ_WEIGHT:
-					sumVolumeTimesPh += ptrsToPackets->at(n)->weight * mMap.getPhValue(j);
-					break;
-				case OBJ_WEIGHTANDVOLUME:
-					sumVolumeTimesPh += ptrsToPackets->at(n)->volume * mMap.getPhValue(j) + ptrsToPackets->at(n)->weight * mMap.getPhValue(j);
-					break;
-				}				
-			}
-			return sumVolumeTimesPh;
+	if (availableNodes.empty()) return false;
+	int itemIndex = uniformRandom(availableNodes.size());
+	Node * randomNode = &availableNodes.at(itemIndex);
+	int randomOrientation = uniformRandom(randomNode->orientations);
+	randomNode->orientation = randomOrientation;
+	addToPath(*randomNode);
+	availableNodes.erase( availableNodes.begin() + itemIndex );
+	return true;
 }
-bool Ant::chooseNext() 
-		{
-			if (ptrsToPackets->empty()) return false;			
+
+double Ant::SumLeftCriteriaWithPheromones(double alpha, double beta) 
+{
+	double sum = 0.0;
+	int i = mPath.back().id;
+	for (size_t n = 0; n < availableNodes.size(); n++)
+	{
+		int j = availableNodes.at(n).id;
+		for (int o = 0; o < availableNodes.at(n).orientations; o++)
+			sum += pow(mMap.getPhValue(i,j,o),alpha) * pow(availableNodes.at(n).volume,beta);					
+	}
+	return sum;
+}
+
+bool Ant::chooseNext(double alpha, double beta) 
+{
+	if (availableNodes.empty()) return false;			
+	if (isFinished) return false;
 			
-			double sumLeftovers = SumLeftCriteriaWithPheromones();
+	double sumLeftovers = SumLeftCriteriaWithPheromones(alpha, beta);
 
-			double maxProbability = 0.0;
-			int bestNextIndex;
-			bool candidateToAddFound = false;
+	double maxProbability = 0.0;
+	int bestNextIndex;
+	int bestOrientation = 0;
+	bool candidateToAddFound = false;
 
-			for (size_t n = 0; n < ptrsToPackets->size(); n++)
-			{
-				int j = mMap.getPacketPtr(n)->id;
-				double volumeOfj = mMap.getPacketPtr(n)->volume;
-				double bottomAreaOfj = mMap.getPacketPtr(n)->bottomArea;
-				double weiOfj = mMap.getPacketPtr(n)->weight;
-				double phij = mMap.getPhValue(j);
-				
-				double probability;
-				bool fitsInContainer;
-				switch (mObjective)
-				{
-					case OBJ_VOLUME:
-						probability = ((phij * volumeOfj)  / sumLeftovers) * (double)(rand() / (RAND_MAX + 1.));
-						break;					
-					case OBJ_WEIGHT:
-						probability = (phij * weiOfj) / sumLeftovers;
-						break;
-					case OBJ_WEIGHTANDVOLUME:
-						probability = (phij * weiOfj + phij * volumeOfj) / sumLeftovers;			
-						break;
+	int i = mPath.back().id;
+	for (size_t n = 0; n < availableNodes.size(); n++)
+	{
+		Node * jnode = &availableNodes.at(n);
+		int j = jnode->id;
+		double volumeOfj = jnode->volume;
+
+		for (int o = 0; o < jnode->orientations; o++)
+		{								
+			double phij = mMap.getPhValue(i,j,o);
+			double probability = ( (pow(phij,alpha) * pow(volumeOfj,beta))  / sumLeftovers);//* (double)(rand() / (RAND_MAX + 1.));
+			//double q = randfrom(0,1);
+			//double q0 = 0.0;	// probability to modify node, 1 100%, 0 0%
+			//double psi = 0.5;	// value by which we modify calculated probalility to choose this node
+			//if (q <= q0) probability *= psi;
+
+			if (probability > maxProbability) {
+				maxProbability = probability;
+				bestNextIndex = n;
+				bestOrientation = o;
+				candidateToAddFound = true;
 				}
-				if (probability > maxProbability) {
-					maxProbability = probability;
-					bestNextIndex = n;
-					candidateToAddFound = true;
-				}
-			}
+		}
+	}
 
-			if (candidateToAddFound) 
+	if (candidateToAddFound) 
+	{
+		isFinished = false;
+		Node * bestNode = &availableNodes.at(bestNextIndex);
+		bestNode->orientation = bestOrientation;
+		bool added = addToPath(*bestNode);
+		if (!added && bestNode->orientations > 1) 
+		{
+			bestNode->orientations--;					
+		} else 
+		{
+			availableNodes.erase( availableNodes.begin() + bestNextIndex );
+		}
+		return true;
+	} else
 			{
-				if (addToPath(ptrsToPackets->at(bestNextIndex))) {
-					ptrsToPackets->erase( ptrsToPackets->begin() + bestNextIndex );
-					return true;
-				} else {
-					return false;
-				}				
-			} else
-			{
+				isFinished = true;
 				return false;
 			}
 		}	
@@ -99,64 +99,71 @@ bool Ant::chooseNext()
 void Ant::updatePheromonePath(double sur) 
 {
 	if (mPath.size()<=1) return;
-
-	for (size_t n = 0; n < mPath.size(); n++)
+	for (size_t n = 1; n < mPath.size(); n++)
 	{
-		int j = mPath.at(n).ptrToMapNode->id;		
-		double newPh = (mMap.getPhValue(j) + sur);
-		mMap.setPhValue(j,newPh);
-	}	
+		int i = mPath.at(n-1).id;
+		int j = mPath.at(n).id;
+		int o = mPath.at(n).orientation;
+		double oldPhValue = mMap.getPhValue(i,j,o);
+		double newPh = (oldPhValue + sur);
+		mMap.setPhValue(i,j,o,newPh);
+	}
 }		
 
-bool Ant::addToPath(P_Cont * packet) 
+bool Ant::addToPath(Node node) 
 {
-			// add it to ants path			
-			Node n;
-			n.ptrToMapNode = packet;
-			n.typeId = n.ptrToMapNode->typeId;
-			n.orientation = uniformRandom(n.ptrToMapNode->orientations);
-			n.weight = n.ptrToMapNode->weight;
-			n.count = 1;
+	if (node.orientation>0) {
+		int a;
+		a =1;
 
-			//mCont.AddNode(n);
-			if (mCont.evaluateIndividual2(n, mPathVolume, mPathWeight))
-			{
-				mPath.push_back(n);
-				//cout << mPathVolume << " ";
-				return true;
-			} else {
-				//cout << mPathVolume << " ";				
-				return false;
-			}
+	}
+	if (mCont.evaluateIndividual2(node, mPathVolume, mPathWeight))
+	{
+		mPath.push_back(node);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 double Ant::getSur() 
 {
-	double sur;
-	switch (mObjective)
-	{
-		case OBJ_VOLUME:
-			sur = mPathVolume / mCont.volume;
-			break;
-		case OBJ_WEIGHT:
-		 	sur = mPathWeight / mCont.weight;
-			break;
-		case OBJ_WEIGHTANDVOLUME:
-			sur = (mPathVolume + mPathWeight) / (mCont.volume + mCont.weight);
-			break;
-	}
-	return sur;
+	return mPathVolume / mCont.volume;
 }
 
 
-double Ant::getVolumePercentage() {
+double Ant::getVolumePercentage() 
+{
 	return (mPathVolume * 100) / mCont.volume;
 }
 
-double Ant::getWeightPercentage() {
-	return (mPathWeight * 100) / mCont.weight;
+int Ant::getPathSteps() 
+{
+	return mPath.size();
 }
 
-int Ant::getPathSteps() {
-	return mPath.size();
+void Ant::printPathSteps() 
+{
+	int prevTypeId = -1;
+	int prevOrient = -1;
+	int count = -1;
+
+	cout << "Path: ";
+	for (size_t n = 0; n < mPath.size(); n++)
+	{
+		if (mPath.at(n).typeId != prevTypeId || mPath.at(n).orientation != prevOrient) 
+		{
+			if (count > 0 ) cout << "-" << count << " ";
+			cout << mPath.at(n).typeId << mPath.at(n).orientation;
+			count = 1;
+		} else 
+		{
+			count++;
+		}
+		prevTypeId = mPath.at(n).typeId;
+		prevOrient = mPath.at(n).orientation;
+	}
+	cout << "-" << count << " ";
+	cout << endl;
+	
 }
