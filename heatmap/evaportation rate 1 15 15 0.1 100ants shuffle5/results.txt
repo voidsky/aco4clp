@@ -1,0 +1,25 @@
+0 Itteration best ant path size 608 Ant sur 0.884790 path vol 88.479029
+0 Itteration best ant path size 611 Ant sur 0.889550 path vol 88.955015
+1 Itteration best ant path size 611 Ant sur 0.889550 path vol 88.955015
+0 Itteration best ant path size 616 Ant sur 0.897483 path vol 89.748326
+1 Itteration best ant path size 614 Ant sur 0.893650 path vol 89.364964
+2 Itteration best ant path size 616 Ant sur 0.897303 path vol 89.730315
+3 Itteration best ant path size 616 Ant sur 0.897423 path vol 89.742322
+4 Itteration best ant path size 616 Ant sur 0.897483 path vol 89.748326
+5 Itteration best ant path size 616 Ant sur 0.897423 path vol 89.742322
+6 Itteration best ant path size 615 Ant sur 0.895897 path vol 89.589663
+7 Itteration best ant path size 616 Ant sur 0.897423 path vol 89.742322
+8 Itteration best ant path size 613 Ant sur 0.893483 path vol 89.348326
+0 Itteration best ant path size 618 Ant sur 0.899897 path vol 89.989663
+1 Itteration best ant path size 614 Ant sur 0.895070 path vol 89.506988
+2 Itteration best ant path size 615 Ant sur 0.895596 path vol 89.559646
+3 Itteration best ant path size 614 Ant sur 0.894310 path vol 89.431001
+4 Itteration best ant path size 618 Ant sur 0.899897 path vol 89.989663
+5 Itteration best ant path size 615 Ant sur 0.895897 path vol 89.589663
+6 Itteration best ant path size 616 Ant sur 0.896123 path vol 89.612305
+7 Itteration best ant path size 616 Ant sur 0.896183 path vol 89.618308
+8 Itteration best ant path size 616 Ant sur 0.897423 path vol 89.742322
+9 Itteration best ant path size 616 Ant sur 0.897483 path vol 89.748326
+10 Itteration best ant path size 616 Ant sur 0.897483 path vol 89.748326
+Globally best ant path size 618 Ant sur 0.899897 path vol 89.989663
+Path: 50-24 00-258 50-3 20-1 10-1 20-2 10-1 20-2 10-1 20-3 10-1 20-6 10-1 20-8 10-1 20-10 10-1 20-3 10-1 20-1 10-1 20-1 10-1 20-1 10-1 20-10 10-1 20-4 10-1 20-2 10-1 20-2 10-3 20-1 10-1 20-3 10-1 20-1 10-1 20-3 10-3 20-1 10-1 20-8 10-1 20-2 00-31 50-56 00-36 30-14 60-3 80-50 70-25 40-5 110-3 40-5 90-5 

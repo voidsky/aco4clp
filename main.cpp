@@ -15,21 +15,24 @@
 using namespace std;
 
 double cacluclate(const string filename, bool printPath) {
-		
+	
+	srand (time(NULL));
+
 	ClpData data;
 	if (!data.load(filename)) return -1;
 
-	Map map(data);
-	map.initPheromones(3);
-	map.setEvaporationRate(0.05);
+	Map map(data);	
+	map.setEvaporationRate(0.1);
 	map.setMinPh(1);	
-	map.setMaxPh(10);
+	map.setMaxPh(20);
+	map.initPheromones(20);
 	int itterationAntCount = 100;
 
 	int notImprovedCount = 0;
 	Ant * globallyBestAnt;
 	double globallyHighestSur = 0.0;
 
+	int totalIteration = 0;
 	
 	while (notImprovedCount<10)
 	{	
@@ -52,10 +55,11 @@ double cacluclate(const string filename, bool printPath) {
 		do
 		{
 			wasChosen = false;
+			#pragma omp parallel for 
 			for (size_t i = 0; i < ants->size(); i++)
 			{
 				Ant * a = &ants->at(i);
-				if (a->chooseNext(1.0, 1.0) == false )	//weigh of phoromones alpha versus volume beta, alpha = 1, beta = [2,...,5]
+				if (a->chooseNext(1.0, 1.0, true) == false )	//weigh of phoromones alpha versus volume beta, alpha = 1, beta = [2,...,5]
 				{		
 					double sur = a->getSur();				
 					if (sur > ittertationHighestSur) 
@@ -67,23 +71,43 @@ double cacluclate(const string filename, bool printPath) {
 					wasChosen = true;
 				}
 			}
+//			map.evaporate();
+//			if (itterationBestAnt) itterationBestAnt->updatePheromonePath(itterationBestAnt->getSur());
 		}while (wasChosen);
 	
-		map.evaporate();
-		itterationBestAnt->updatePheromonePath(itterationBestAnt->getSur());
+		/*for (size_t i = 0; i < ants->size(); i++)
+		{
+			ants->at(i).printPathSteps();
+		}*/
 
-		if (ittertationHighestSur > globallyHighestSur) {
-			
+		map.evaporate();
+
+		if (ittertationHighestSur > globallyHighestSur && globallyHighestSur > 0.0) {
+			itterationBestAnt->updatePheromonePath(itterationBestAnt->getSur() * 1.5);
+		}
+		else {
+			itterationBestAnt->updatePheromonePath(itterationBestAnt->getSur());
+		}
+
+		if (ittertationHighestSur > globallyHighestSur) {			
 			globallyHighestSur = ittertationHighestSur; 
 			globallyBestAnt=itterationBestAnt; 
 			notImprovedCount = 0;
 		} else 
-		{notImprovedCount++;};	
+		{			
+			notImprovedCount++;
+		};	
 
 		cout << notImprovedCount << " Itteration best ant path size " << itterationBestAnt->getPathSteps() << " Ant sur " << itterationBestAnt->getSur() << " path vol " << itterationBestAnt->getVolumePercentage() << endl;
 		//t.StopAndPrint();
+
+		map.saveHeatMap("./heatmap/heatmap"+std::to_string(totalIteration)+".png");
+
+		totalIteration++;
 	}
-	
+		
+	map.saveHeatMap("./heatmap/heatmapFinal.png");
+
 	cout << "Globally best ant path size " << globallyBestAnt->getPathSteps() << " Ant sur " << globallyBestAnt->getSur() << " path vol " << globallyBestAnt->getVolumePercentage() << endl;
 	if (printPath) globallyBestAnt->printPathSteps();
 	//cout << "\r Itterations with no improvement " << notImprovedCount;	

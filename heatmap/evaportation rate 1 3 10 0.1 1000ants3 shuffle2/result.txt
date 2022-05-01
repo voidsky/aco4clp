@@ -1,0 +1,18 @@
+> "/mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas/clp" 
+0 Itteration best ant path size 608 Ant sur 0.884790 path vol 88.479029
+0 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+1 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+2 Itteration best ant path size 625 Ant sur 0.891234 path vol 89.123430
+0 Itteration best ant path size 628 Ant sur 0.894124 path vol 89.412403
+1 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+2 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+3 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+4 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+5 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+6 Itteration best ant path size 628 Ant sur 0.894124 path vol 89.412403
+7 Itteration best ant path size 608 Ant sur 0.884790 path vol 88.479029
+8 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+9 Itteration best ant path size 626 Ant sur 0.891711 path vol 89.171065
+10 Itteration best ant path size 609 Ant sur 0.886690 path vol 88.668958
+Globally best ant path size 628 Ant sur 0.894124 path vol 89.412403
+Path: 50-21 30-7 20-1 10-1 20-4 10-1 20-5 10-1 20-9 10-1 20-1 10-1 20-4 10-1 20-1 10-1 20-1 10-2 20-6 10-1 20-3 10-2 00-324 50-54 00-1 50-30 30-21 100-20 30-7 60-3 80-50 70-25 40-10 110-3 90-5 

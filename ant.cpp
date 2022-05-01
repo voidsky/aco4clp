@@ -33,12 +33,15 @@ double Ant::SumLeftCriteriaWithPheromones(double alpha, double beta)
 	{
 		int j = availableNodes.at(n).id;
 		for (int o = 0; o < availableNodes.at(n).orientations; o++)
-			sum += pow(mMap.getPhValue(i,j,o),alpha) * pow(availableNodes.at(n).volume,beta);					
+			sum += pow(mMap.getPhValue(i,j,o),alpha) * pow(availableNodes.at(n).volume,beta);	
+			//sum += mMap.getPhValue(i,j,o) * availableNodes.at(n).volume;
+			//sum += pow(mMap.getPhValue(i,j,o),alpha) * pow(availableNodes.at(n).volume,beta);					
+			
 	}
 	return sum;
 }
 
-bool Ant::chooseNext(double alpha, double beta) 
+bool Ant::chooseNext(double alpha, double beta, bool shuffleOrder) 
 {
 	if (availableNodes.empty()) return false;			
 	if (isFinished) return false;
@@ -51,10 +54,19 @@ bool Ant::chooseNext(double alpha, double beta)
 	bool candidateToAddFound = false;
 
 	int i = mPath.back().id;
+
+	if (shuffleOrder) {
+		random_device rd;
+    	mt19937 g(rd());
+		shuffle(availableNodes.begin(), availableNodes.end(), g);
+	}
+
 	for (size_t n = 0; n < availableNodes.size(); n++)
 	{
 		Node * jnode = &availableNodes.at(n);
 		int j = jnode->id;
+		if (i==j) continue;
+		
 		double volumeOfj = jnode->volume;
 
 		for (int o = 0; o < jnode->orientations; o++)
@@ -63,7 +75,7 @@ bool Ant::chooseNext(double alpha, double beta)
 			double probability = ( (pow(phij,alpha) * pow(volumeOfj,beta))  / sumLeftovers);//* (double)(rand() / (RAND_MAX + 1.));
 			//double q = randfrom(0,1);
 			//double q0 = 0.0;	// probability to modify node, 1 100%, 0 0%
-			//double psi = 0.5;	// value by which we modify calculated probalility to choose this node
+			//double psi = 1.2;	// value by which we modify calculated probalility to choose this node
 			//if (q <= q0) probability *= psi;
 
 			if (probability > maxProbability) {
@@ -90,22 +102,24 @@ bool Ant::chooseNext(double alpha, double beta)
 		}
 		return true;
 	} else
-			{
+	{
 				isFinished = true;
 				return false;
-			}
-		}	
+	}
+}	
 
 void Ant::updatePheromonePath(double sur) 
 {
 	if (mPath.size()<=1) return;
+	
+	#pragma omp parallel for 
 	for (size_t n = 1; n < mPath.size(); n++)
 	{
 		int i = mPath.at(n-1).id;
 		int j = mPath.at(n).id;
 		int o = mPath.at(n).orientation;
 		double oldPhValue = mMap.getPhValue(i,j,o);
-		double newPh = (oldPhValue + sur);
+		double newPh = (oldPhValue + sur /*/10*/);
 		mMap.setPhValue(i,j,o,newPh);
 	}
 }		

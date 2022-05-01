@@ -1,9 +1,6 @@
 #include "struct.h"
 
 int uniformRandom(int maxValue) {
-        /* initialize random seed: */
-        srand (time(NULL));
-
         return (int) (rand() / ((RAND_MAX + 1.0) / maxValue));
 }
 

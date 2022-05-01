@@ -1,0 +1,29 @@
+0 Itteration best ant path size 608 Ant sur 0.884790 path vol 88.479029
+0 Itteration best ant path size 614 Ant sur 0.892030 path vol 89.203043
+1 Itteration best ant path size 601 Ant sur 0.889927 path vol 88.992735
+0 Itteration best ant path size 615 Ant sur 0.892857 path vol 89.285718
+0 Itteration best ant path size 615 Ant sur 0.898714 path vol 89.871359
+0 Itteration best ant path size 619 Ant sur 0.899204 path vol 89.920367
+1 Itteration best ant path size 619 Ant sur 0.899084 path vol 89.908360
+2 Itteration best ant path size 619 Ant sur 0.899084 path vol 89.908360
+3 Itteration best ant path size 619 Ant sur 0.899204 path vol 89.920367
+4 Itteration best ant path size 619 Ant sur 0.899084 path vol 89.908360
+5 Itteration best ant path size 619 Ant sur 0.899084 path vol 89.908360
+6 Itteration best ant path size 618 Ant sur 0.898607 path vol 89.860724
+7 Itteration best ant path size 619 Ant sur 0.899084 path vol 89.908360
+8 Itteration best ant path size 618 Ant sur 0.898607 path vol 89.860724
+9 Itteration best ant path size 619 Ant sur 0.899204 path vol 89.920367
+10 Itteration best ant path size 619 Ant sur 0.899084 path vol 89.908360
+Globally best ant path size 619 Ant sur 0.899204 path vol 89.920367
+Path: 00-87 50-21 00-154 50-34 00-44 10-1 20-1 10-1 20-2 10-1 20-1 10-2 20-2 10-1 20-3 10-1 20-1 10-1 20-8 10-1 20-6 10-1 20-7 10-3 20-1 10-2 00-1 20-1 10-1 20-6 10-3 20-5 10-1 20-8 10-1 20-10 10-1 20-8 10-2 20-1 10-1 20-4 00-26 50-4 30-35 00-13 50-4 60-3 80-50 70-25 40-4 110-3 40-6 90-5 
+
+if (a->chooseNext(1.0, 1.0, true) == false )
+double newPh = mPheromones[i][j][o] * (1-evaporationRate);
+double newPh = (oldPhValue + sur /*/10*/);
+
+	if (ittertationHighestSur > globallyHighestSur && globallyHighestSur > 0.0) {
+			itterationBestAnt->updatePheromonePath(itterationBestAnt->getSur() * 1.5);
+		}
+		else {
+			itterationBestAnt->updatePheromonePath(itterationBestAnt->getSur());
+		}

@@ -6,11 +6,18 @@
 #include "container.h"
 #include <cmath>
 
+#include <random>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+#include <vector>
+using namespace std ; 
+
 class Ant {
 	public:
 		Ant(Map& map, Container& cont);	
 		bool chooseFirst();
-		bool chooseNext(double alpha, double beta);
+		bool chooseNext(double alpha, double beta, bool shuffleOrder);
 		void updatePheromonePath(double sur);
 		int getPathSteps();
 		void printPathSteps();

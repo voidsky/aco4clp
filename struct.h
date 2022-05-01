@@ -44,6 +44,12 @@ typedef struct Node {
 	double volume;
 	double weight;
 	//P_Cont * ptrToMapNode;
+
+  bool operator<(const Node& a) const
+    {
+        return volume < a.volume;
+    }
+  
 } Node;
 
 

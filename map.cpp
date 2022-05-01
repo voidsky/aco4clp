@@ -6,18 +6,27 @@ Map::Map(ClpData& data):mData(data)
 	mData = data;
 	int id = 0;
 
-    for (int type = 0; type < data.numPacketTypes; type++) 
-	for (int packet = 0; packet < data.number[type]; packet++)
-	{                
-		Node n;
-		n.id = id++;
-		n.typeId = type;
-		n.orientations = data.orient[type];										
-		n.orientation = 0;
-		n.volume = data.wid[type] * data.len[type] * data.hei[type];
-		n.weight = data.wei[type];
-		mPackets.push_back(n);
-    }
+    for (int type = 0; type < data.numPacketTypes; type++)
+	{ 
+		for (int packet = 0; packet < data.number[type]; packet++)
+		{                
+			Node n;
+			n.id = id++;
+			n.typeId = type;
+			n.orientations = data.orient[type];										
+			n.orientation = 0;
+			n.volume = data.wid[type] * data.len[type] * data.hei[type];
+			n.weight = data.wei[type];
+			mPackets.push_back(n);
+		}
+	}
+	
+	sort(mPackets.begin(), mPackets.end());
+
+	for (Node n : mPackets) {
+		cout << n.id << " " << n.volume << endl;
+	}
+
 }
 
 void Map::initPheromones(double initialPhValue) 
@@ -27,30 +36,59 @@ void Map::initPheromones(double initialPhValue)
 	{
 		mPheromones[i] = new double*[mPackets.size()];
 		for (size_t j = 0; j < mPackets.size(); j++) 
-		{
+		{			
 			mPheromones[i][j] = new double[mPackets.at(j).orientations];
 			for (int o = 0; o < mPackets.at(j).orientations; o++)
 			{	
-				setPhValue(i,j,o,initialPhValue);
+				if (i == j ) 
+					setPhValue(i,j,o,0);
+				else
+					setPhValue(i,j,o,initialPhValue);
 			}
 		}
-	}
+	}	
 }
 
 void Map::evaporate() 
 {
+	#pragma omp parallel for 
     for (size_t i = 0; i < mPackets.size(); i++) 
 	{
 		for (size_t j = 0; j < mPackets.size(); j++) 
 		{
+			if (i == j ) continue;
+
 			for (int o = 0; o < mPackets.at(j).orientations; o++)
-			{	
+			{					 
 				double newPh = mPheromones[i][j][o] * (1-evaporationRate);
 				setPhValue(i,j,o,newPh);				
 			}
 		}
 	}
 }
+
+void Map::saveHeatMap(const string filename) 
+{
+	int sizex = mPackets.size();
+	int sizey = mPackets.size();
+	
+	CImg<unsigned char> image(sizex,sizey,1,3,0);
+	
+	for (Node xpack : mPackets) {
+		for (Node ypack : mPackets) {
+			int i = xpack.id;
+			int j = ypack.id; 
+			double ph = getPhValue(i,j,0);
+			int red = ((255 * ph) / mMaxPh);
+			unsigned char color_mag[] = { red, red, red };
+			image.draw_point(i,j,color_mag);
+			//image.draw_circle(i,j,10,color_mag);
+		}
+	}	
+	const char * c = filename.c_str();
+	image.save(c);
+}
+
 
 void Map::setPhValue(int i, int j, int o, double p) 
 { 
@@ -77,5 +115,6 @@ void Map::printPheromones()
 			cout << ") ";
 		}
 	}
+
 	cout << endl;
 }

@@ -1,0 +1,15 @@
+0 Itteration best ant path size 608 Ant sur 0.884790 path vol 88.479029
+0 Itteration best ant path size 612 Ant sur 0.889617 path vol 88.961705
+0 Itteration best ant path size 614 Ant sur 0.892790 path vol 89.279029
+1 Itteration best ant path size 614 Ant sur 0.892790 path vol 89.279029
+2 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+3 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+4 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+5 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+6 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+7 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+8 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+9 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+10 Itteration best ant path size 613 Ant sur 0.892314 path vol 89.231393
+Globally best ant path size 614 Ant sur 0.892790 path vol 89.279029
+Path: 50-29 30-7 10-25 20-75 00-324 50-1 00-1 30-14 60-1 50-1 51-10 50-31 60-2 80-50 70-25 40-10 110-3 90-5 
