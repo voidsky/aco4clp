@@ -20,19 +20,20 @@ Map::Map(ClpData& data):mData(data)
 			mPackets.push_back(n);
 		}
 	}
+
+	mPheromones = new double**[mPackets.size()];
 	
-	sort(mPackets.begin(), mPackets.end());
+	/*sort(mPackets.begin(), mPackets.end());
 
 	for (Node n : mPackets) {
 		cout << n.id << " " << n.volume << endl;
-	}
+	}*/
 
 }
 
 void Map::initPheromones(double initialPhValue) 
-{
-    mPheromones = new double**[mPackets.size()];
-    for (size_t i = 0; i < mPackets.size(); i++) 
+{      
+	for (size_t i = 0; i < mPackets.size(); i++) 
 	{
 		mPheromones[i] = new double*[mPackets.size()];
 		for (size_t j = 0; j < mPackets.size(); j++) 
@@ -46,11 +47,13 @@ void Map::initPheromones(double initialPhValue)
 					setPhValue(i,j,o,initialPhValue);
 			}
 		}
-	}	
+	}
+
 }
 
 void Map::evaporate() 
 {
+	//cout << "Evaporating map " << mPheromones << endl;
 	#pragma omp parallel for 
     for (size_t i = 0; i < mPackets.size(); i++) 
 	{
@@ -71,6 +74,34 @@ void Map::saveHeatMap(const string filename)
 {
 	int sizex = mPackets.size();
 	int sizey = mPackets.size();
+
+	
+	heatmap_t* hm = heatmap_new(sizex,sizey);
+
+	for (Node xpack : mPackets) {
+		for (Node ypack : mPackets) {
+			int i = xpack.id;
+			int j = ypack.id; 
+			double ph0 = getPhValue(i,j,0);
+			double ph1 = getPhValue(i,j,1);
+			if (ph1 > ph0) ph0 = ph1;
+			if (ph0>0) heatmap_add_weighted_point(hm, i, j, ph0);
+		}
+	}	
+	std::vector<unsigned char> image(sizex*sizey*4);
+    heatmap_render_default_to(hm, &image[0]);
+   	heatmap_free(hm);
+
+    if(unsigned error = lodepng::encode(filename, image, sizex, sizey)) {
+        std::cerr << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+        return;
+    }
+}
+
+/*void Map::saveHeatMap(const string filename) 
+{
+	int sizex = mPackets.size();
+	int sizey = mPackets.size();
 	
 	CImg<unsigned char> image(sizex,sizey,1,3,0);
 	
@@ -87,13 +118,16 @@ void Map::saveHeatMap(const string filename)
 	}	
 	const char * c = filename.c_str();
 	image.save(c);
-}
+}*/
 
 
 void Map::setPhValue(int i, int j, int o, double p) 
 { 
-	if ((p>=mMinPh) && (p<=mMaxPh)) 
-		mPheromones[i][j][o] = p; 
+	if (mMinPh > -1 && mMaxPh > -1) {
+		if (p<=mMinPh) p = mMinPh;
+		if (p>=mMaxPh) p = mMaxPh;		
+	} 
+	mPheromones[i][j][o] = p; 	
 }
 
 double Map::getPhValue(int i, int j, int o) { 

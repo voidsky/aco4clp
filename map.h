@@ -1,16 +1,20 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "sys/time.h"
+/*#include "sys/time.h"
 #define cimg_OS 0
 #include "cimg/CImg.h"
-using namespace cimg_library;
+using namespace cimg_library;*/
+
+#include "lodepng.h"
+#include "heatmap.h"
 
 #include "struct.h"
 #include "clpdata.h"
-
+#include <cmath>
 class Map {
 	public:
+		Map() {};
 		Map(ClpData& data);
         
 		void initPheromones(double initialPhValue);
@@ -30,8 +34,9 @@ class Map {
 		void setMaxPh(double p) { mMaxPh = p; }
 
 		ClpData mData;
-	private:		
 		double evaporationRate;
+	
+		
 		double mMinPh = 0.0;
 		double mMaxPh = 10.0;
 

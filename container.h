@@ -38,19 +38,18 @@ class Holes {
 
 class Container {
 public:
+	Container() {};
     Container(ClpData& data) { mData = data; lenCont = data.lenCont; widCont = data.widCont; heiCont = data.heiCont; volume = data.volumeCont; weight = data.weiCont; mW_Cont_free = data.widCont; }
 	bool evaluateIndividual2 (Node n, double &o1, double &o2);
 	void AddNode(Node n);
 	void RemoveLast();
 	void orientation_pieces(int id, int rot,double& widR,double& depR,double& heiR);
-	vector<Node> *packets;
 	bool AllPacked();
     double volume, weight;	
-private:
+
 
     static  bool cmpVol(const Holes &h1, const Holes &h2) { return (h1.getVol() < h2.getVol()); };
     ClpData mData;
-	vector<P_Order> items;    // Items ordenados segun la heuristica
 	vector<P_Order> itemsCont;
 
 	vector<Holes> holesF;       // Vector de huecos Front dentro del contenedor

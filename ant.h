@@ -15,14 +15,21 @@ using namespace std ;
 
 class Ant {
 	public:
-		Ant(Map& map, Container& cont);	
+		Ant(Map& map, Container& cont);
 		bool chooseFirst();
+		bool chooseInOrder();
 		bool chooseNext(double alpha, double beta, bool shuffleOrder);
-		void updatePheromonePath(double sur);
+		bool chooseNextACS(double alpha, double beta, bool shuffleOrder);
+		void updatePheromonePath(double sur);		
+		void updatePheromonePathElitist(Ant * eliteAnt);		
+		void updatePheromonePathACS(double rho);
+		void updateAfterOneStepForACS(double xi, double tau0);
+
 		int getPathSteps();
 		void printPathSteps();
 		double getSur();
-        
+        bool HasIJ(int ii, int jj);
+
 		double getVolumePercentage();
 		double getWeightPercentage();
 

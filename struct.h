@@ -50,6 +50,10 @@ typedef struct Node {
         return volume < a.volume;
     }
   
+  bool operator>(const Node& a) const
+    {
+        return volume > a.volume;
+    }  
 } Node;
 
 
