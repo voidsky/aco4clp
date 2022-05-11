@@ -68,5 +68,6 @@
         "ctime": "cpp",
         "chrono": "cpp",
         "thread": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

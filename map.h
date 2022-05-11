@@ -23,8 +23,8 @@ class Map {
 		
         void printPheromones();		
 
-		double getPhValue(int i, int j, int o);
-		void setPhValue(int i,int j, int o, double p);
+		double getPhValue(int i, int j, int oi, int oj);
+		void setPhValue(int i,int j, int oi, int oj, double p);
 
 		double getNumberOfPackets() { return mPackets.size();};
 		Node getPacket(int n) { return mPackets.at(n); };

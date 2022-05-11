@@ -2,15 +2,13 @@
 
 using namespace std;
 
-Ant::Ant(Map& map, Container& cont)
+Ant::Ant(Map& map)
 {
-	mMap = map;
-	mCont = cont;
-	// copy from map to local available nodes
-	for (size_t n = 0; n < mMap.getNumberOfPackets(); n++)
-		availableNodes.push_back(mMap.getPacket(n));
+	mMap = map; 
+	mCont = Container(map.mData);
+	for (size_t n = 0; n < mMap.getNumberOfPackets(); n++) 
+		availableNodes.push_back(mMap.getPacket(n));	
 }
-
 
 bool Ant::chooseFirst() 
 {
@@ -24,16 +22,21 @@ bool Ant::chooseFirst()
 	return added;
 }
 
-bool Ant::chooseInOrder() 
+bool Ant::chooseInOrder(int orientation) 
 {
 	if (availableNodes.empty()) return false;
 	sort(mMap.mPackets.begin(), mMap.mPackets.end(),[](Node a, Node b) {
 		return a.volume < b.volume;
 	});	
 
-	for (int index = 0; index < availableNodes.size(); index++) {
+	for (size_t index = 0; index < availableNodes.size(); index++) {
 		Node * node = &availableNodes.at(index);
-		int randomOrientation = uniformRandom(node->orientations);
+		int randomOrientation;
+		if (orientation == -1 ) {
+			randomOrientation= uniformRandom(node->orientations);
+		} else {
+			randomOrientation = orientation;
+		}
 		node->orientation = randomOrientation;
 		//cout << node->volume << endl;
 		addToPath(*node);
@@ -45,11 +48,12 @@ double Ant::SumLeftCriteriaWithPheromones(double alpha, double beta)
 {
 	double sum = 0.0;
 	int i = mPath.back().id;
+	int oi = mPath.back().orientation;
 	for (size_t n = 0; n < availableNodes.size(); n++)
 	{
 		int j = availableNodes.at(n).id;
-		for (int o = 0; o < availableNodes.at(n).orientations; o++)
-			sum += pow(mMap.getPhValue(i,j,o),alpha) * pow(availableNodes.at(n).volume,beta);	
+		for (int oj = 0; oj < availableNodes.at(n).orientations; oj++)
+			sum += pow(mMap.getPhValue(i,j,oi,oj),alpha) * pow(availableNodes.at(n).volume,beta);	
 			//sum += mMap.getPhValue(i,j,o) * availableNodes.at(n).volume;
 			//sum += pow(mMap.getPhValue(i,j,o),alpha) * pow(availableNodes.at(n).volume,beta);					
 			
@@ -70,12 +74,13 @@ bool Ant::chooseNext(double alpha, double beta, bool shuffleOrder)
 	bool candidateToAddFound = false;
 
 	int i = mPath.back().id;
+	int oi = mPath.back().orientation;
 
-	/*if (shuffleOrder) {
+	if (shuffleOrder) {
 		random_device rd;
     	mt19937 g(rd());
 		shuffle(availableNodes.begin(), availableNodes.end(), g);
-	}*/
+	}
 
 	/*for (Node n : availableNodes) {
 		if (n.orientations > 1) n.orientation = uniformRandom(n.orientations);
@@ -85,26 +90,43 @@ bool Ant::chooseNext(double alpha, double beta, bool shuffleOrder)
 	{
 		Node * jnode = &availableNodes.at(n);
 		int j = jnode->id;
-		if (i==j) continue;
+		if (i==j) continue; // we dont move to same node
 		
 		double volumeOfj = jnode->volume;
 
-		for (int o = 0; o < jnode->orientations; o++)
-		{								
-			double phij = mMap.getPhValue(i,j,o);
-			double probability = ( (pow(phij,alpha) * pow(volumeOfj,beta))  / sumLeftovers);//* (double)(rand() / (RAND_MAX + 1.));
-			//double q = randfrom(0,1);
-			//double q0 = 0.0;	// probability to modify node, 1 100%, 0 0%
-			//double psi = 1.2;	// value by which we modify calculated probalility to choose this node
-			//if (q <= q0) probability *= psi;
-
-			if (probability > maxProbability) {
-				maxProbability = probability;
-				bestNextIndex = n;
-				bestOrientation = o;
-				candidateToAddFound = true;
-				}
+		//TODO: need to changes this to process more than 2 orientations
+		int oj;
+		double phij;
+		if (jnode->orientations > 1) {
+			// node has two orientations, choose one with better pheromones
+			double phijoj0 = mMap.getPhValue(i,jnode->id,oi,0);
+			double phijoj1 = mMap.getPhValue(i,jnode->id,oi,1);		
+			if (phijoj0 > phijoj1) {
+				phij = phijoj0;
+				oj = 0;
+			} else if (phijoj0 < phijoj1) {
+				phij = phijoj1;
+				oj = 1;
+			} else {
+				// pheromones are equal, use default orientation
+				phij = phijoj0;
+				oj = jnode->orientation;
+			}
+		} else {
+			// node has one orientation left, so we consider it for probability
+			oj = jnode->orientation;
+			phij = mMap.getPhValue(i,jnode->id,oi,oj);
 		}
+		
+		double probability = ( (pow(phij,alpha) * pow(volumeOfj,beta))  / sumLeftovers);//* (double)(rand() / (RAND_MAX + 1.));
+
+		if (probability > maxProbability) {
+			maxProbability = probability;
+			bestNextIndex = n;
+			bestOrientation = oj;
+			candidateToAddFound = true;
+		}
+
 	}
 
 	if (candidateToAddFound) 
@@ -112,19 +134,29 @@ bool Ant::chooseNext(double alpha, double beta, bool shuffleOrder)
 		isFinished = false;
 		Node * bestNode = &availableNodes.at(bestNextIndex);
 		bestNode->orientation = bestOrientation;
+
 		bool added = addToPath(*bestNode);
-		if (!added && bestNode->orientations > 1) 
-		{
-			bestNode->orientations--;					
+		if (added) {
+			availableNodes.erase( availableNodes.begin() + bestNextIndex );
+			return true;
+		}
+		// was not added, check orientations
+		if (bestNode->orientations > 1) 
+		{			
+			// was not added, but more orientations left
+			bestNode->orientations--;
+			(bestNode->orientation == 0) ? bestNode->orientation = 1 : bestNode->orientation = 0;
+			return true; 
 		} else 
 		{
+			// was not added and has no more orientations left
 			availableNodes.erase( availableNodes.begin() + bestNextIndex );
+			return false;
 		}
-		return true;
 	} else
 	{
-				isFinished = true;
-				return false;
+		isFinished = true;
+		return false;
 	}
 }	
 
@@ -139,6 +171,7 @@ bool Ant::chooseNextACS(double alpha, double beta, bool shuffleOrder)
 	bool candidateToAddFound = false;
 
 	int i = mPath.back().id;
+	int oi = mPath.back().orientation;
 
 	if (shuffleOrder) {
 		random_device rd;
@@ -154,15 +187,15 @@ bool Ant::chooseNextACS(double alpha, double beta, bool shuffleOrder)
 		
 		double volumeOfj = jnode->volume;
 
-		for (int o = 0; o < jnode->orientations; o++)
+		for (int oj = 0; oj < jnode->orientations; oj++)
 		{								
-			double phij = mMap.getPhValue(i,j,o);
+			double phij = mMap.getPhValue(i,j,oi, oj);
 			double probability = phij * pow(volumeOfj,beta);
 						
 			if (probability > maxProbability) {
 				maxProbability = probability;
 				bestNextIndex = n;
-				bestOrientation = o;
+				bestOrientation = oj;
 				candidateToAddFound = true;
 				}
 		}
@@ -173,37 +206,46 @@ bool Ant::chooseNextACS(double alpha, double beta, bool shuffleOrder)
 		isFinished = false;
 		Node * bestNode = &availableNodes.at(bestNextIndex);
 		bestNode->orientation = bestOrientation;
+
 		bool added = addToPath(*bestNode);
-		if (!added && bestNode->orientations > 1) 
-		{
-			bestNode->orientations--;					
+		if (added) {
+			availableNodes.erase( availableNodes.begin() + bestNextIndex );
+			return true;
+		}
+		// was not added, check orientations
+		if (bestNode->orientations > 1) 
+		{			
+			// was not added, but more orientations left
+			bestNode->orientations--;
+			(bestNode->orientation == 0) ? bestNode->orientation = 1 : bestNode->orientation = 0;
+			return true; 
 		} else 
 		{
+			// was not added and has no more orientations left
 			availableNodes.erase( availableNodes.begin() + bestNextIndex );
+			return false;
 		}
-		return true;
 	} else
 	{
-				isFinished = true;
-				return false;
+		isFinished = true;
+		return false;
 	}
 }	
 
 void Ant::updatePheromonePath(double sur) 
 {
 	if (mPath.size()<=1) return;
-	
-	//cout << "Updating map " << mMap.mPheromones << endl;
 
 	#pragma omp parallel for 
 	for (size_t n = 1; n < mPath.size(); n++)
 	{
 		int i = mPath.at(n-1).id;
-		int j = mPath.at(n).id;
-		int o = mPath.at(n).orientation;
-		double oldPhValue = mMap.getPhValue(i,j,o);
-		double newPh = (oldPhValue + sur /*/10*/);
-		mMap.setPhValue(i,j,o,newPh);
+		int oi = mPath.at(n-1).orientation;
+		int j = mPath.at(n).id;		
+		int oj = mPath.at(n).orientation;
+		double oldPhValue = mMap.getPhValue(i,j,oi,oj);
+		double newPh = (oldPhValue + sur);
+		mMap.setPhValue(i,j,oi,oj,newPh);
 	}
 }	
 
@@ -215,22 +257,23 @@ void Ant::updatePheromonePathElitist(Ant * eliteAnt)
 	for (size_t n = 1; n < mPath.size(); n++)
 	{
 		int i = mPath.at(n-1).id;
-		int j = mPath.at(n).id;
-		int o = mPath.at(n).orientation;
-		double oldPhValue = mMap.getPhValue(i,j,o);
+		int oi = mPath.at(n-1).orientation;
+		int j = mPath.at(n).id;		
+		int oj = mPath.at(n).orientation;
+		double oldPhValue = mMap.getPhValue(i,j,oi,oj);
 		double newPh;
 		if (eliteAnt->HasIJ(i,j)) {
 			double eliteSur = eliteAnt->getSur();
 			double thisSur = getSur();
-			newPh = (oldPhValue + thisSur) + eliteSur * 0.5;
+			newPh = oldPhValue + eliteSur * 1.5;
 		} else {
 			newPh = (oldPhValue +  getSur());
 		}
-		mMap.setPhValue(i,j,o,newPh);
+		mMap.setPhValue(i,j,oi,oj,newPh);
 	}
 }	
 
-void Ant::updatePheromonePathACS(double rho) 
+void Ant::updatePheromonePathACS(Ant * eliteAnt, double rho) 
 {
 	if (mPath.size()<=1) return;
 	
@@ -238,13 +281,16 @@ void Ant::updatePheromonePathACS(double rho)
 	for (size_t n = 1; n < mPath.size(); n++)
 	{
 		int i = mPath.at(n-1).id;
-		int j = mPath.at(n).id;
-		int o = mPath.at(n).orientation;
-		double oldPhValue = mMap.getPhValue(i,j,o);
-		double sur = getSur();
-		double newPh = oldPhValue + sur * 2;
-		
-		mMap.setPhValue(i,j,o,newPh);
+		int oi = mPath.at(n-1).orientation;
+		int j = mPath.at(n).id;		
+		int oj = mPath.at(n).orientation;
+		double oldPhValue = mMap.getPhValue(i,j,oi,oj);
+		double newPh;
+		if (eliteAnt->HasIJ(i,j)) {
+			double eliteSur = eliteAnt->getSur();
+			newPh = (1-rho)*oldPhValue + rho * eliteSur;
+			mMap.setPhValue(i,j,oi,oj,newPh);
+		} 		
 	}
 }	
 
@@ -252,11 +298,12 @@ void Ant::updateAfterOneStepForACS(double xi, double tau0)
 {
 	if (mPath.size()<2) return;
 	int i = mPath.at(mPath.size()-2).id;
+	int oi = mPath.at(mPath.size()-2).orientation;
 	int j = mPath.at(mPath.size()-1).id;
-	int o = mPath.at(mPath.size()-1).orientation;
-	double oldPhValue = mMap.getPhValue(i,j,o);
-	double newPh = oldPhValue - 0.01;
-	mMap.setPhValue(i,j,o,newPh);
+	int oj = mPath.at(mPath.size()-1).orientation;
+	double oldPhValue = mMap.getPhValue(i,j,oi,oj);
+	double newPh = (1-xi) * oldPhValue + xi * tau0;
+	mMap.setPhValue(i,j,oi,oj,newPh);
 }
 
 
@@ -323,4 +370,58 @@ void Ant::printPathSteps()
 	cout << "-" << count << " ";
 	cout << endl;
 	
+}
+
+double Ant::maxPheromone() 
+{
+	if (mPath.size()<=1) return 0;
+	double max;
+	for (size_t n = 1; n < mPath.size(); n++)
+	{
+		int i = mPath.at(n-1).id;
+		int oi = mPath.at(n-1).orientation;
+		int j = mPath.at(n).id;		
+		int oj = mPath.at(n).orientation;
+		double oldPhValue = mMap.getPhValue(i,j,oi,oj);
+		if (n==1) {
+			max = oldPhValue;
+		} else {
+			if (oldPhValue>max) max= oldPhValue;
+		}
+	}
+	return max;
+}
+
+double Ant::minPheromone() 
+{
+	if (mPath.size()<=1) return 0;
+	double min;
+	for (size_t n = 1; n < mPath.size(); n++)
+	{
+		int i = mPath.at(n-1).id;
+		int oi = mPath.at(n-1).orientation;
+		int j = mPath.at(n).id;		
+		int oj = mPath.at(n).orientation;
+		double oldPhValue = mMap.getPhValue(i,j,oi,oj);
+		if (n==1) {
+			min = oldPhValue;
+		} else {
+			if (oldPhValue<min) min= oldPhValue;
+		}
+	}
+	return min;
+}
+
+void Ant::printPathPheromones() 
+{
+	if (mPath.size()<=1) return;
+	for (size_t n = 1; n < mPath.size(); n++)
+	{
+		int i = mPath.at(n-1).id;
+		int oi = mPath.at(n-1).orientation;
+		int j = mPath.at(n).id;		
+		int oj = mPath.at(n).orientation;
+		double oldPhValue = mMap.getPhValue(i,j,oi,oj);
+		cout << oldPhValue << " ";
+	}
 }

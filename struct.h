@@ -38,12 +38,11 @@ struct Arc;
 typedef struct Node {
 	int id;	
 	int typeId;  // Piece identifier
-	//int count;	// Number of pieces of id type to be used
 	int orientations;
 	int orientation;	// Orientation for pieces
 	double volume;
 	double weight;
-	//P_Cont * ptrToMapNode;
+	
 
   bool operator<(const Node& a) const
     {
@@ -60,7 +59,7 @@ typedef struct Node {
 
 /* Random from 0 to maxValue-1 */
 int uniformRandom(int maxValue);
-
 double randfrom(double min, double max);
+int uniformDistribution(int a, int b);
 
 #endif

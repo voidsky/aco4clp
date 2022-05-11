@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed May  4 14:27:58 2022
+# Make data base, printed on Tue May 10 22:15:33 2022
 
 # Variables
 
@@ -55,13 +55,13 @@ VSCODE_CWD = /mnt/c/Program Files/Microsoft VS Code
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/CanonicalGroupLimited.UbuntuonWindows_2004.2022.1.0_x64__79rhkp1fndgsc:/mnt/c/WinAVR-20100110/bin:/mnt/c/WinAVR-20100110/utils/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files (x86)/Calibre2/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Appeon/Shared/PowerBuilder:/mnt/c/Program Files (x86)/Appeon/Shared/PowerBuilder/x64:/mnt/c/Program Files (x86)/Appeon/PowerBuilder 19.0:/mnt/c/WINDOWS/Microsoft.NET/Framework/v4.0.30319:/mnt/c/Program Files (x86)/GitExtensions/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/d/Program Files/nodejs/:/mnt/c/Program Files (x86)/dotnet/:/mnt/c/Users/Algis/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/DOSBox-0.74-2/:/mnt/c/Program Files/Java/jdk-11.0.1/bin:/mnt/d/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin:/mnt/d/Program Files (x86)/Fiddler:/mnt/c/Users/Algis/AppData/Local/Microsoft/WindowsApps:/mnt/d/Program Files/R/R-4.0.0/bin/:/mnt/c/Users/Algis/AppData/Local/Programs/MiKTeX 2.9/miktex/bin/x64/:/mnt/c/Program Files (x86)/MakeTzx/:/mnt/c/Users/Algis/.dotnet/tools:/mnt/c/Users/Algis/AppData/Roaming/npm:/mnt/c/Program Files (x86)/heroku/bin:/mnt/c/Users/Algis/AppData/Local/GitHubDesktop/bin:/snap/bin
+PATH = /home/algis/.vscode-server/bin/dfd34e8260c270da74b5c2d86d61aee4b6d56977/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/WindowsApps/CanonicalGroupLimited.UbuntuonWindows_2004.2022.1.0_x64__79rhkp1fndgsc:/mnt/c/WinAVR-20100110/bin:/mnt/c/WinAVR-20100110/utils/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files (x86)/Calibre2/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Appeon/Shared/PowerBuilder:/mnt/c/Program Files (x86)/Appeon/Shared/PowerBuilder/x64:/mnt/c/Program Files (x86)/Appeon/PowerBuilder 19.0:/mnt/c/WINDOWS/Microsoft.NET/Framework/v4.0.30319:/mnt/c/Program Files (x86)/GitExtensions/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/d/Program Files/nodejs/:/mnt/c/Users/Algis/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/DOSBox-0.74-2/:/mnt/c/Program Files/Java/jdk-11.0.1/bin:/mnt/d/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin:/mnt/d/Program Files (x86)/Fiddler:/mnt/c/Users/Algis/AppData/Local/Microsoft/WindowsApps:/mnt/d/Program Files/R/R-4.0.0/bin/:/mnt/c/Users/Algis/AppData/Local/Programs/MiKTeX 2.9/miktex/bin/x64/:/mnt/c/Program Files (x86)/MakeTzx/:/mnt/c/Users/Algis/.dotnet/tools:/mnt/c/Users/Algis/AppData/Roaming/npm:/mnt/c/Program Files (x86)/heroku/bin:/mnt/c/Users/Algis/AppData/Local/GitHubDesktop/bin:/snap/bin
 # environment
 XDG_RUNTIME_DIR = /mnt/wslg/runtime-dir
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-f26e2839-3189-4b53-905f-6a3f24b9a79d.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-8ce5ab09-4316-4d6a-a504-cebb0bbcc892.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -79,7 +79,7 @@ PWD = /mnt/d/Google Drive/Magistranturai/Magistrinis/Darbas
 # default
 .LOADED := 
 # environment
-WSL_INTEROP = /run/WSL/8_interop
+WSL_INTEROP = /run/WSL/73_interop
 # environment
 PULSE_SERVER = /mnt/wslg/PulseServer
 # environment
@@ -119,7 +119,7 @@ NAME = Code
 # makefile (from 'makefile', line 4)
 LFLAGS = -Wall $(DEBUG)
 # environment
-VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/Algis/.vscode/extensions/ms-vscode-remote.remote-wsl-0.66.0
+VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/Algis/.vscode/extensions/ms-vscode-remote.remote-wsl-0.66.2
 # default
 MAKE_COMMAND := make
 # default
@@ -164,10 +164,8 @@ TERM = xterm-256color
 VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 WSL_DISTRO_NAME = Ubuntu
-# environment
-MOTD_SHOWN = update-motd
 # variable set hash-table stats:
-# Load=77/1024=8%, Rehash=0, Collisions=4/102=4%
+# Load=76/1024=7%, Rehash=0, Collisions=4/101=4%
 
 # Pattern-specific Variable Values
 
@@ -175,7 +173,7 @@ MOTD_SHOWN = update-motd
 
 # Directories
 
-# . (device 67, inode 7599824371734887): 33 files, no impossibilities.
+# . (device 68, inode 7599824371734887): 33 files, no impossibilities.
 
 # 33 files, no impossibilities in 1 directories.
 
@@ -195,7 +193,7 @@ all:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-04 14:27:57.0945306
+#  Last modified 2022-05-10 22:15:29.1036522
 #  File has been updated.
 #  Successfully updated.
 
@@ -223,7 +221,7 @@ main: main.cpp
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 8):
-	$(CC) $(LFLAGS) $(OMPLAG) *.cpp -o clp 
+	$(CC) $(LFLAGS) $(OMPLAG) -Ofast *.cpp -o clp 
 
 # files hash-table stats:
 # Load=7/1024=1%, Rehash=0, Collisions=0/18=0%
@@ -239,6 +237,6 @@ main: main.cpp
 # strcache performance: lookups = 47 / hit rate = 14%
 # hash-table stats:
 # Load=40/8192=0%, Rehash=0, Collisions=1/47=2%
-# Finished Make data base on Wed May  4 14:27:58 2022
+# Finished Make data base on Tue May 10 22:15:33 2022
 
  

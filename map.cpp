@@ -23,10 +23,10 @@ Map::Map(ClpData& data):mData(data)
 
 	mPheromones = new double**[mPackets.size()];
 	
-	/*sort(mPackets.begin(), mPackets.end());
+	//sort(mPackets.begin(), mPackets.end());
 
-	for (Node n : mPackets) {
-		cout << n.id << " " << n.volume << endl;
+	/*for (Node n : mPackets) {
+		cout << n.id << " " << n.volume << " " << n.orientation << endl;
 	}*/
 
 }
@@ -38,17 +38,20 @@ void Map::initPheromones(double initialPhValue)
 		mPheromones[i] = new double*[mPackets.size()];
 		for (size_t j = 0; j < mPackets.size(); j++) 
 		{			
-			mPheromones[i][j] = new double[mPackets.at(j).orientations];
-			for (int o = 0; o < mPackets.at(j).orientations; o++)
+			int orientations = mPackets.at(i).orientations * mPackets.at(j).orientations;
+			mPheromones[i][j] = new double[orientations];
+			for (int oi = 0; oi < mPackets.at(i).orientations; oi++)
 			{	
-				if (i == j ) 
-					setPhValue(i,j,o,0);
-				else
-					setPhValue(i,j,o,initialPhValue);
+				for (int oj = 0; oj < mPackets.at(j).orientations; oj++)
+				{
+					if (i == j ) 
+						setPhValue(i,j,oi,oj,0);
+					else
+						setPhValue(i,j,oi,oj,initialPhValue);
+				}
 			}
 		}
 	}
-
 }
 
 void Map::evaporate() 
@@ -61,10 +64,14 @@ void Map::evaporate()
 		{
 			if (i == j ) continue;
 
-			for (int o = 0; o < mPackets.at(j).orientations; o++)
+			for (int oi = 0; oi < mPackets.at(i).orientations; oi++)
 			{					 
-				double newPh = mPheromones[i][j][o] * (1-evaporationRate);
-				setPhValue(i,j,o,newPh);				
+				for (int oj = 0; oj < mPackets.at(j).orientations; oj++)
+				{			
+					double oldPhValue = getPhValue(i,j,oi,oj);
+					double newPh = oldPhValue * (1-evaporationRate);
+					setPhValue(i,j,oi,oj,newPh);				
+				}
 			}
 		}
 	}
@@ -81,11 +88,11 @@ void Map::saveHeatMap(const string filename)
 	for (Node xpack : mPackets) {
 		for (Node ypack : mPackets) {
 			int i = xpack.id;
+			int oi = xpack.orientation;
 			int j = ypack.id; 
-			double ph0 = getPhValue(i,j,0);
-			double ph1 = getPhValue(i,j,1);
-			if (ph1 > ph0) ph0 = ph1;
-			if (ph0>0) heatmap_add_weighted_point(hm, i, j, ph0);
+			int oj = ypack.orientation;
+			double ph = getPhValue(i,j,oi,oj);
+			heatmap_add_weighted_point(hm, i, j, ph);
 		}
 	}	
 	std::vector<unsigned char> image(sizex*sizey*4);
@@ -121,16 +128,18 @@ void Map::saveHeatMap(const string filename)
 }*/
 
 
-void Map::setPhValue(int i, int j, int o, double p) 
+void Map::setPhValue(int i, int j, int oi, int oj, double p) 
 { 
 	if (mMinPh > -1 && mMaxPh > -1) {
 		if (p<=mMinPh) p = mMinPh;
 		if (p>=mMaxPh) p = mMaxPh;		
 	} 
+	int o = oi*2 + oj;
 	mPheromones[i][j][o] = p; 	
 }
 
-double Map::getPhValue(int i, int j, int o) { 
+double Map::getPhValue(int i, int j, int oi, int oj) { 
+	int o = oi*2 + oj;
 	return mPheromones[i][j][o]; 
 };
 
@@ -143,10 +152,9 @@ void Map::printPheromones()
 	{	
 		for (int j = 0; j < n; j++)
 		{
-			cout << "(";
-			for (int o = 0; o < mPackets.at(j).orientations; o++)
-				cout << getPhValue(i,j,o) << ",";
-			cout << ") ";
+			int oi = mPackets.at(i).orientation;
+			int oj = mPackets.at(j).orientation;
+			cout << getPhValue(i,j,oi,oj) << ",";
 		}
 	}
 
